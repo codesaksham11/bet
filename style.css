@@ -6,371 +6,437 @@
 }
 
 html {
-    scroll-behavior: smooth;
+    scroll-behavior: smooth; /* Enable smooth scrolling for links like #demo-start */
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    line-height: 1.6;
-    color: #333;
-    background-color: #f8f9fa; /* Light grey background */
+    /* Use Noto Sans Devanagari if loaded, otherwise fallback */
+    font-family: 'Noto Sans Devanagari', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    line-height: 1.7; /* Slightly increased line height for Nepali */
+    color: #343a40; /* Darker base text color */
+    background-color: #f8f9fa;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    font-size: 16px; /* Base font size */
 }
 
 /* --- Container --- */
 .container {
-    max-width: 960px;
-    margin: 2rem auto; /* Top/bottom margin */
-    padding: 2rem; /* Padding inside */
-    background-color: #ffffff; /* White background */
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    flex-grow: 1; /* Allows container to grow and push footer down */
-    text-align: center; /* Center content like buttons */
+    max-width: 1000px; /* Slightly wider container */
+    margin: 2rem auto;
+    padding: 2rem 2.5rem; /* More padding */
+    background-color: #ffffff;
+    border-radius: 10px; /* Slightly more rounded corners */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.07);
+    flex-grow: 1;
 }
 
-h1 {
-    margin-bottom: 1rem;
+h1, h2, h3, h4 {
     color: #212529;
+    margin-bottom: 1rem;
+    line-height: 1.4;
 }
+h1 { font-size: 2rem; text-align: center; margin-bottom: 0.5rem;}
+h2 { font-size: 1.6rem; margin-top: 2.5rem; border-bottom: 2px solid #dee2e6; padding-bottom: 0.5rem; }
+h3 { font-size: 1.3rem; margin-top: 1.5rem; color: #0056b3; }
+h4 { font-size: 1.1rem; margin-top: 1rem; }
 
 p {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     color: #495057;
+}
+.subtitle {
+    text-align: center;
+    font-size: 1.1rem;
+    color: #6c757d;
+    margin-bottom: 2rem;
 }
 
 
 /* --- Header --- */
 header {
-    background-color: #343a40; /* Dark grey */
+    background-color: #343a40;
     color: #ffffff;
-    padding: 0.8rem 2rem; /* Padding top/bottom and left/right */
+    padding: 0.8rem 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: sticky; /* Make header sticky */
+    top: 0;
+    z-index: 1000; /* Ensure header is above other content */
 }
+/* ... (rest of header styles remain the same) ... */
+header .user-status { display: flex; align-items: center; gap: 1rem; }
+#user-info { display: flex; align-items: center; gap: 0.5rem; color: #e9ecef; }
+#user-info .user-icon { font-size: 1.2em; }
+#user-name { font-weight: 600; color: #ffffff; }
 
-header .logo {
-    font-weight: bold;
-    font-size: 1.5rem; /* Make logo text larger */
-}
-
-header .user-status {
-    display: flex;
-    align-items: center;
-    gap: 1rem; /* Space between items */
-}
-
-#user-info {
-    display: flex; /* Hidden initially by inline style */
-    align-items: center;
-    gap: 0.5rem;
-    color: #e9ecef; /* Lighter text color */
-}
-#user-info .user-icon {
-    font-size: 1.2em; /* Slightly larger icon */
-}
-#user-name {
-    font-weight: 600; /* Bold username */
-    color: #ffffff;
-}
-
-
-/* --- Buttons (General) --- */
+/* --- Buttons (General - Kept from previous, with additions) --- */
 .auth-button,
-.proceed-button { /* Apply styles to both button types */
-    background-color: #007bff; /* Primary blue */
+.proceed-button,
+.calculate-button,
+.secondary-button,
+.try-button {
+    background-color: #007bff;
     color: white;
     border: none;
-    padding: 10px 20px; /* Comfortable padding */
+    padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
-    font-weight: 600; /* Bolder text */
-    font-size: 0.95rem; /* Slightly larger font */
+    font-weight: 600;
+    font-size: 1rem; /* Slightly larger base button font */
     transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
     display: inline-flex;
     align-items: center;
-    gap: 0.6rem; /* Space for icon */
-    text-decoration: none; /* Remove underline if used as link */
-    vertical-align: middle; /* Align with text if needed */
+    justify-content: center; /* Center text/icon */
+    gap: 0.6rem;
+    text-decoration: none;
+    vertical-align: middle;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-family: inherit; /* Ensure buttons use the body font */
 }
+/* ... (hover, active, disabled states remain the same) ... */
+.auth-button:hover, .proceed-button:hover, .calculate-button:hover, .secondary-button:hover, .try-button:hover { background-color: #0056b3; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); }
+.auth-button:active, .proceed-button:active, .calculate-button:active, .secondary-button:active, .try-button:active { transform: scale(0.98); background-color: #004085; }
+.auth-button:disabled, .proceed-button:disabled, .calculate-button:disabled, .secondary-button:disabled, .try-button:disabled { background-color: #6c757d; cursor: not-allowed; opacity: 0.7; box-shadow: none; transform: none; }
 
-.auth-button .icon,
-.proceed-button .icon {
-    line-height: 1; /* Helps vertical alignment */
-    font-size: 1.1em; /* Icon size relative to text */
-}
-
-/* Hover state */
-.auth-button:hover,
-.proceed-button:hover {
-    background-color: #0056b3; /* Darker blue */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-/* Active/Click state */
-.auth-button:active,
-.proceed-button:active {
-    transform: scale(0.98); /* Subtle shrink */
-    background-color: #004085; /* Even darker blue */
-}
-
-/* Disabled state */
-.auth-button:disabled,
-.proceed-button:disabled {
-    background-color: #6c757d; /* Grey */
-    cursor: not-allowed;
-    opacity: 0.7;
-    box-shadow: none;
-    transform: none;
-}
+.auth-button .icon, .proceed-button .icon, .calculate-button .icon, .secondary-button .icon { line-height: 1; font-size: 1.1em; }
 
 /* --- Specific Button Styles --- */
-#logout-btn {
-    background-color: #dc3545; /* Red */
-}
-#logout-btn:hover {
-    background-color: #c82333; /* Darker red */
-}
-#logout-btn:active {
-    background-color: #bd2130;
-}
+#logout-btn { background-color: #dc3545; }
+#logout-btn:hover { background-color: #c82333; }
+#logout-btn:active { background-color: #bd2130; }
 
-/* Proceed button in main content */
-.proceed-button {
-    margin-top: 1rem; /* Space above */
-    /* Uses the general button styles */
+.proceed-button.large-button { /* Style for the main proceed button */
+    padding: 12px 25px;
+    font-size: 1.1rem;
+    margin-top: 0.5rem; /* Less space after subtitle */
+    background-color: #28a745; /* Green color */
 }
+.proceed-button.large-button:hover { background-color: #218838; }
+.proceed-button.large-button:active { background-color: #1e7e34; }
 
 
-/* --- Modal Styles --- */
-.modal-overlay {
-    position: fixed;
-    inset: 0; /* Replaces top/left/width/height */
-    background-color: rgba(0, 0, 0, 0.6); /* Slightly less dark overlay */
-    z-index: 1050; /* Ensure it's above other content */
-    /* --- Default state: HIDDEN --- */
-    display: none;
-    justify-content: center;
-    align-items: center;
-    padding: 1rem; /* Padding for small screens */
-    /* --- Animation --- */
-    opacity: 0;
-    transition: opacity 0.3s ease-in-out;
+.calculate-button {
+    margin-top: 1.5rem;
+    background-color: #ffc107; /* Yellow/Orange */
+    color: #212529; /* Dark text on yellow */
+}
+.calculate-button:hover { background-color: #e0a800; }
+.calculate-button:active { background-color: #d39e00; }
+
+.secondary-button {
+    background-color: #6c757d; /* Grey */
+    margin-top: 1rem;
+}
+.secondary-button:hover { background-color: #5a6268; }
+
+.try-button {
+    display: inline-block; /* Make it behave like a button */
+    margin: 1.5rem auto;
+    background-color: #17a2b8; /* Teal/Info color */
+}
+.try-button:hover { background-color: #138496; }
+
+
+/* --- Intro & How it Works Sections --- */
+.intro-section {
+    text-align: center;
+    margin-bottom: 3rem;
 }
 
-/* --- State when modal should be VISIBLE --- */
-.modal-overlay.visible {
-    display: flex;
-    opacity: 1;
-}
-
-/* Modal Content Box */
-#login-modal-content,
-#confirmation-modal-content {
-    background: #ffffff;
-    padding: 2rem 2.5rem; /* More padding inside */
+.how-it-works {
+    background-color: #e9ecef; /* Light background for contrast */
+    padding: 1.5rem 2rem;
     border-radius: 8px;
-    max-width: 450px; /* Slightly wider */
-    width: 100%; /* Responsive width */
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-    position: relative;
-    /* --- Animation --- */
-    transform: translateY(-20px) scale(0.98); /* Start slightly up and small */
-    transition: transform 0.3s ease-out;
+    margin-bottom: 3rem;
+}
+.how-it-works h2 {
+    margin-top: 0; /* Remove top margin for section heading */
+    border-bottom-color: #adb5bd; /* Lighter border */
+}
+.how-it-works ol {
+    list-style-position: inside; /* Numbers inside the list item */
+    padding-left: 0.5rem; /* Slight indent */
+    margin-top: 1rem;
+}
+.how-it-works li {
+    margin-bottom: 0.75rem; /* Space between points */
+    color: #495057;
 }
 
-.modal-overlay.visible #login-modal-content,
-.modal-overlay.visible #confirmation-modal-content {
-    transform: translateY(0) scale(1); /* Animate into place */
+/* --- Demo Section --- */
+.demo-section {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #dee2e6; /* Separator line */
+    text-align: center;
 }
-
-/* Modal Headings */
-#login-modal-content h2,
-#confirmation-modal-content h3 {
+.demo-section h2 {
+    border: none; /* Remove border from demo heading */
+    text-align: center;
+}
+.demo-layout {
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    justify-content: space-around; /* Space out items */
+    gap: 2rem; /* Space between demo sites */
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    text-align: left; /* Align text inside sites left */
+}
+.demo-site {
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    padding: 1.5rem;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    flex: 1; /* Allow sites to grow */
+    min-width: 280px; /* Minimum width before wrapping */
+    max-width: 400px; /* Maximum width */
+}
+.demo-site h3 {
     margin-top: 0;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    color: #495057;
+}
+.demo-image-placeholder {
+    width: 100%;
+    /* height: 180px; */ /* Fixed height or aspect-ratio */
+    aspect-ratio: 3 / 2; /* Maintain aspect ratio */
+    background-color: #e9ecef;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6c757d;
+    font-style: italic;
+    overflow: hidden; /* Ensure image fits */
+}
+.demo-image-placeholder img {
+    max-width: 100%;
+    max-height: 100%;
+    display: block; /* Remove extra space below image */
+    object-fit: cover; /* Or contain */
+}
+.odds-display {
+    background-color: #f8f9fa;
+    padding: 0.8rem;
+    border-radius: 4px;
     margin-bottom: 1.5rem;
-    text-align: center;
-    color: #343a40; /* Dark heading */
-    font-weight: 600;
+    font-size: 0.95rem;
+}
+.odds-display p {
+    margin-bottom: 0.3rem;
+}
+.odds-display strong {
+    color: #0056b3;
+    font-size: 1.05em;
 }
 
-/* Confirmation Modal Text */
-#confirmation-modal-content p {
-    margin-bottom: 2rem; /* More space below text */
-    text-align: center;
-    color: #495057; /* Softer text color */
-    font-size: 1rem;
+/* Demo Form Styling */
+.input-group {
+    margin-bottom: 1rem;
 }
-
-/* Modal Form Styling */
-.form-group {
-     margin-bottom: 1.25rem; /* Space between form groups */
-     text-align: left; /* Align labels left */
-}
-.form-group label {
+.input-group label {
     display: block;
     margin-bottom: 0.4rem;
     font-weight: 600;
     color: #495057;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
 }
-.form-group input[type="email"],
-.form-group input[type="password"],
-.form-group input[type="text"] { /* Added text for name input */
+.input-group input[type="number"] { /* Target number inputs */
     width: 100%;
-    padding: 12px 15px; /* More padding in inputs */
-    border: 1px solid #ced4da; /* Standard border color */
+    padding: 10px 12px;
+    border: 1px solid #ced4da;
     border-radius: 4px;
     font-size: 1rem;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
-.form-group input:focus {
+/* Remove spinners for number inputs (optional) */
+.input-group input[type=number]::-webkit-outer-spin-button,
+.input-group input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.input-group input[type=number] {
+  -moz-appearance: textfield; /* Firefox */
+}
+.input-group input:focus {
     outline: none;
-    border-color: #80bdff; /* Blue focus border */
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25); /* Blue focus glow */
+    border-color: #80bdff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
 }
 
-/* Modal Login Submit Button */
-.submit-login {
-    width: 100%; /* Make login button full width */
-    padding: 12px 20px; /* Taller button */
-    margin-top: 0.5rem; /* Space above button */
+/* Total Investment Input */
+.total-investment {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+.total-investment label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+.total-investment input[type="number"] {
+    max-width: 200px; /* Limit width */
+    display: inline-block; /* Center it */
+    text-align: center;
+    padding: 10px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
     font-size: 1rem;
 }
 
-/* Modal Close Button */
-.modal-close-btn {
-    position: absolute;
-    top: 12px;
-    right: 15px;
-    font-size: 1.8rem; /* Larger close icon */
-    color: #6c757d; /* Grey color */
-    background: none;
-    border: none;
-    cursor: pointer;
-    line-height: 1;
-    padding: 0;
-    transition: color 0.2s ease;
-}
-.modal-close-btn:hover {
-    color: #343a40; /* Darker on hover */
-}
-
-/* Error & Status Messages */
-.error-message,
-.status-message {
-    text-align: center;
-    margin-top: 1rem;
-    font-weight: 600;
-    min-height: 1.2em;
-    color: #dc3545; /* Red for errors */
-    font-size: 0.9rem;
-    padding: 0.5rem;
-    border-radius: 4px;
-    /* Hidden by default - JS will show */
-    display: none;
-}
+/* Demo Error Messages */
 .error-message {
-     background-color: #f8d7da; /* Light red background */
-     border: 1px solid #f5c6cb; /* Red border */
+    display: none; /* Hidden by default */
+    color: #dc3545; /* Red */
+    font-size: 0.85rem;
+    margin-top: 0.3rem;
+    text-align: left; /* Align error below input */
 }
-/* Proceed button status */
-#proceed-status-message {
-    margin-top: 0.8rem; /* Space below proceed button */
-    background-color: transparent; /* No background by default */
-    border: none;
+.error-message.visible { /* Class added by JS to show */
+    display: block;
 }
-#proceed-status-message.loading {
-    color: #007bff; /* Blue for loading */
+
+/* --- Results Sections --- */
+.results-section {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    border: 1px dashed #adb5bd; /* Dashed border */
+    border-radius: 8px;
+    background-color: #f8f9fa; /* Light background */
+    text-align: center;
 }
-#proceed-status-message.success {
+.results-section h3 {
     color: #28a745; /* Green for success */
+    font-size: 1.4rem;
+}
+.results-section h3.error { /* Class for no arbitrage */
+    color: #dc3545; /* Red for error */
+}
+#result-details p {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+#result-details strong { /* Highlight amounts */
+    color: #0056b3;
+    font-weight: 700;
+}
+.profit-text {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #28a745; /* Green */
+    margin-top: 1rem;
 }
 
-
-/* Confirmation Modal Actions */
-.confirmation-modal-actions {
+/* --- Fixed Bet Section --- */
+.fixed-bet-area {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    border: 1px solid #e0a800; /* Yellow border */
+    border-radius: 8px;
+    background-color: #fff;
+}
+.fixed-bet-area h4 {
+    margin-top: 0;
+    text-align: center;
+    color: #343a40;
+}
+.fixed-bet-options {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
-    gap: 1rem;
-    margin-top: 1.5rem;
+    gap: 1.5rem;
+    margin: 1rem 0 1.5rem 0;
 }
-.confirmation-modal-actions .cancel-button {
-    background-color: #6c757d; /* Grey */
+.fixed-bet-options label {
+    cursor: pointer;
+    font-weight: 500;
 }
-.confirmation-modal-actions .cancel-button:hover {
-    background-color: #5a6268;
+.fixed-bet-options input[type="radio"] {
+    margin-right: 0.4rem;
+    vertical-align: middle; /* Align radio with text */
 }
-/* Confirmation proceed button */
-.confirmation-modal-actions .confirm-proceed {
-    background-color: #dc3545; /* Default to red for destructive action */
+#fixed-bet-results p {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
 }
-.confirmation-modal-actions .confirm-proceed:hover {
-    background-color: #c82333;
+#fixed-bet-results strong {
+    color: #0056b3;
+    font-weight: 700;
 }
-
 
 /* --- Footer --- */
 footer {
     text-align: center;
-    padding: 1.5rem 1rem; /* More padding */
-    margin-top: auto; /* Pushes footer to bottom */
-    background-color: #e9ecef; /* Lighter grey */
-    color: #6c757d; /* Medium grey text */
+    padding: 1.5rem 1rem;
+    margin-top: auto;
+    background-color: #e9ecef;
+    color: #6c757d;
     font-size: 0.9rem;
-    border-top: 1px solid #dee2e6; /* Subtle top border */
+    border-top: 1px solid #dee2e6;
 }
+
+/* --- Modals (Keep styles from previous version) --- */
+.modal-overlay { position: fixed; inset: 0; background-color: rgba(0, 0, 0, 0.6); z-index: 1050; display: none; justify-content: center; align-items: center; padding: 1rem; opacity: 0; transition: opacity 0.3s ease-in-out; }
+.modal-overlay.visible { display: flex; opacity: 1; }
+#login-modal-content, #confirmation-modal-content { background: #ffffff; padding: 2rem 2.5rem; border-radius: 8px; max-width: 450px; width: 100%; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2); position: relative; transform: translateY(-20px) scale(0.98); transition: transform 0.3s ease-out; }
+.modal-overlay.visible #login-modal-content, .modal-overlay.visible #confirmation-modal-content { transform: translateY(0) scale(1); }
+/* ... (rest of modal content, form, close button styles) ... */
+#login-modal-content h2, #confirmation-modal-content h3 { margin-top: 0; margin-bottom: 1.5rem; text-align: center; color: #343a40; font-weight: 600; }
+#confirmation-modal-content p { margin-bottom: 2rem; text-align: center; color: #495057; font-size: 1rem; }
+.form-group { margin-bottom: 1.25rem; text-align: left; }
+.form-group label { display: block; margin-bottom: 0.4rem; font-weight: 600; color: #495057; font-size: 0.9rem; }
+.form-group input[type="email"], .form-group input[type="password"], .form-group input[type="text"] { width: 100%; padding: 12px 15px; border: 1px solid #ced4da; border-radius: 4px; font-size: 1rem; transition: border-color 0.2s ease, box-shadow 0.2s ease; }
+.form-group input:focus { outline: none; border-color: #80bdff; box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25); }
+.submit-login { width: 100%; padding: 12px 20px; margin-top: 0.5rem; font-size: 1rem; }
+.modal-close-btn { position: absolute; top: 12px; right: 15px; font-size: 1.8rem; color: #6c757d; background: none; border: none; cursor: pointer; line-height: 1; padding: 0; transition: color 0.2s ease; }
+.modal-close-btn:hover { color: #343a40; }
+.error-message.login-error { /* Specific style for login modal error if needed */ background-color: #f8d7da; border: 1px solid #f5c6cb; }
+.confirmation-modal-actions { display: flex; justify-content: center; gap: 1rem; margin-top: 1.5rem; }
+.confirmation-modal-actions .cancel-button { background-color: #6c757d; }
+.confirmation-modal-actions .cancel-button:hover { background-color: #5a6268; }
+.confirmation-modal-actions .confirm-proceed { background-color: #dc3545; }
+.confirmation-modal-actions .confirm-proceed:hover { background-color: #c82333; }
+
+
+/* --- Status Messages (General) --- */
+.status-message { text-align: center; margin-top: 1rem; font-weight: 600; min-height: 1.2em; color: #dc3545; font-size: 0.9rem; padding: 0.5rem; border-radius: 4px; display: none; }
+.status-message.loading { color: #007bff; background-color: #cfe2ff; border: 1px solid #b6d4fe; }
+.status-message.success { color: #155724; background-color: #d4edda; border: 1px solid #c3e6cb; }
+#proceed-status-message { border: none; background-color: transparent; } /* Specific override */
+
 
 /* --- Responsive Adjustments --- */
 @media (max-width: 768px) {
-    header {
-        flex-direction: column;
-        align-items: center;
-        padding: 1rem;
-        text-align: center;
-    }
-    header .logo {
-        margin-bottom: 0.8rem;
-    }
-    header .user-status {
-        margin-top: 0.5rem;
-        flex-wrap: wrap; /* Allow buttons to wrap */
-        justify-content: center;
-    }
-    .container {
-        margin: 1rem;
-        padding: 1.5rem;
-    }
+    header { flex-direction: column; align-items: center; padding: 1rem; text-align: center; }
+    header .logo { margin-bottom: 0.8rem; }
+    header .user-status { margin-top: 0.5rem; flex-wrap: wrap; justify-content: center; }
+    .container { margin: 1rem; padding: 1.5rem; }
+    h1 { font-size: 1.8rem; }
+    h2 { font-size: 1.4rem; }
+    .demo-layout { flex-direction: column; align-items: center; gap: 1.5rem; } /* Stack demo sites */
+    .demo-site { max-width: 90%; min-width: 90%; } /* Make stacked sites wider */
 }
 
 @media (max-width: 480px) {
-    #login-modal-content,
-    #confirmation-modal-content {
-        padding: 1.5rem; /* Less padding on small screens */
-    }
-    .auth-button,
-    .proceed-button {
-        font-size: 0.9rem;
-        padding: 8px 16px;
-    }
-    .form-group input[type="email"],
-    .form-group input[type="password"],
-    .form-group input[type="text"] {
-        padding: 10px 12px;
-    }
-    .submit-login {
-         padding: 10px 15px;
-    }
-    .confirmation-modal-actions {
-        flex-direction: column-reverse; /* Stack buttons */
-        gap: 0.8rem;
-    }
-    .confirmation-modal-actions .auth-button {
-        width: 100%; /* Full width stacked buttons */
-    }
+    body { font-size: 15px; }
+    h1 { font-size: 1.6rem; }
+    h2 { font-size: 1.3rem; }
+    .container { padding: 1rem; }
+    #login-modal-content, #confirmation-modal-content { padding: 1.5rem; }
+    .auth-button, .proceed-button, .calculate-button, .secondary-button, .try-button { font-size: 0.9rem; padding: 8px 16px; }
+    .form-group input { padding: 10px 12px; }
+    .submit-login { padding: 10px 15px; }
+    .confirmation-modal-actions { flex-direction: column-reverse; gap: 0.8rem; }
+    .confirmation-modal-actions .auth-button { width: 100%; }
+    .total-investment input[type="number"] { max-width: 150px; }
 }
