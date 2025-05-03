@@ -1,27 +1,109 @@
-            <!-- Login Modal -->
-            <div id="login-modal-overlay" class="modal-overlay" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="login-modal-title">
-                <div id="login-modal-content">
-                    <button id="modal-close-btn" class="modal-close-btn" aria-label="Close Login Modal">×</button>
-                    <form id="login-form" action="javascript:void(0);" aria-describedby="login-error-message">
-                        <h2 id="login-modal-title">Member Login</h2>
-                        <!-- ADDED NAME INPUT -->
-                        <div class="form-group">
-                            <label for="name-input">Your Name:</label>
-                            <input type="text" id="name-input" name="name" required placeholder="e.g., Alex" autocomplete="name">
-                        </div>
-                        <!-- END ADDED NAME INPUT -->
-                        <div class="form-group">
-                            <label for="email-input">Email Address:</label>
-                            <input type="email" id="email-input" name="email" required placeholder="you@example.com" autocomplete="email">
-                        </div>
-                        <div class="form-group">
-                            <label for="password-input">Password:</label>
-                            <input type="password" id="password-input" name="password" required placeholder="Enter your password" autocomplete="current-password">
-                        </div>
-                         <button type="submit" id="login-submit-btn" class="auth-button">
-                            <span class="icon">🚀</span> Login
-                        </button>
-                        <div id="login-error-message" class="error-message" aria-live="polite"></div>
-                    </form>
-                </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arbitrage App - Login</title>
+    <!-- Link to the CSS file -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📈</text></svg>">
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header>
+        <div class="logo">
+            <!-- Replace with your logo image or text -->
+            <span style="font-size: 1.5rem; font-weight: bold;">Arbitrage App</span>
+        </div>
+        <div class="user-status">
+            <!-- User Info - Initially Hidden -->
+            <div id="user-info" style="display: none;">
+                <span class="user-icon">👤</span> Welcome, <span id="user-name">User</span>!
             </div>
+            <!-- Logout Button - Initially Hidden -->
+            <button id="logout-btn" class="auth-button" style="display: none;">
+                <span class="icon">🚪</span> Logout
+            </button>
+            <!-- Login Button - Initially Visible -->
+            <button id="login-header-btn" class="auth-button">
+                <span class="icon">🔑</span> Login
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <div class="container">
+        <h1>Welcome to the Arbitrage App</h1>
+        <p>Please log in to continue or proceed if you are already logged in.</p>
+
+        <!-- Proceed Button -->
+        <button id="proceed-btn" class="proceed-button">
+            <span class="icon">🚀</span> Proceed to App
+        </button>
+        <!-- Status Message Area for the Proceed Button -->
+        <div id="proceed-status-message" class="status-message" role="status" aria-live="polite"></div>
+
+    </div> <!-- End .container -->
+
+    <!-- Footer Section -->
+    <footer>
+        <p>© 2024 Arbitrage App. All Rights Reserved.</p>
+    </footer>
+
+    <!-- Login Modal - Hidden by default via CSS -->
+    <div id="login-modal-overlay" class="modal-overlay" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="login-modal-title">
+        <div id="login-modal-content">
+            <button id="modal-close-btn" class="modal-close-btn" aria-label="Close Login Modal">×</button>
+            <form id="login-form" action="javascript:void(0);" aria-describedby="login-error-message">
+                <h2 id="login-modal-title">Member Login</h2>
+                <!-- Name Input -->
+                <div class="form-group">
+                    <label for="name-input">Your Name:</label>
+                    <input type="text" id="name-input" name="name" required placeholder="e.g., Alex" autocomplete="name">
+                </div>
+                <!-- Email Input -->
+                <div class="form-group">
+                    <label for="email-input">Email Address:</label>
+                    <input type="email" id="email-input" name="email" required placeholder="you@example.com" autocomplete="email">
+                </div>
+                <!-- Password Input -->
+                <div class="form-group">
+                    <label for="password-input">Password:</label>
+                    <input type="password" id="password-input" name="password" required placeholder="Enter your password" autocomplete="current-password">
+                </div>
+                <!-- Submit Button -->
+                 <button type="submit" id="login-submit-btn" class="auth-button submit-login">
+                    <span class="icon">🚀</span> Login
+                </button>
+                <!-- Error Message Area for Login Form -->
+                <div id="login-error-message" class="error-message" aria-live="polite"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal (for Session Conflict - Hidden by default via CSS) -->
+    <div id="confirmation-modal-overlay" class="modal-overlay" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="confirmation-modal-title">
+        <div id="confirmation-modal-content">
+             <!-- Using h3 for semantic heading level within modal -->
+             <h3 id="confirmation-modal-title">Session Conflict Detected</h3>
+             <p id="confirmation-modal-message">
+                 This email is already logged in on another device or browser. Continuing will log out the other session. Do you wish to proceed?
+             </p>
+             <div class="confirmation-modal-actions">
+                 <button id="confirm-cancel-btn" class="auth-button cancel-button">
+                     <span class="icon">❌</span> Cancel
+                 </button>
+                 <button id="confirm-proceed-btn" class="auth-button proceed-button confirm-proceed">
+                     <span class="icon">✔️</span> Proceed
+                 </button>
+             </div>
+        </div>
+    </div>
+
+    <!-- Link to JavaScript file -->
+    <script src="app.js"></script>
+
+</body>
+</html> 
