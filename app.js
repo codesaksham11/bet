@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
         site1_w1: 1.749,
         site1_w2: 2.112,
         site2_w1: 2.08,
-        site2_w2: 2.86
+        site2_w2: 1.86
     };
     // Store calculated demo results to reuse in fixed bet calculation
     let lastDemoCalculation = null;
