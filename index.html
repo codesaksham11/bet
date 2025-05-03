@@ -12,7 +12,6 @@
     <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📈</text></svg>">
     <!-- Google Fonts for a potential Nepali font (Optional - Choose one that works well) -->
-    <!-- Example: Noto Sans Devanagari -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
@@ -21,7 +20,7 @@
 
 <body>
 
-    <!-- Header Section (Remains mostly the same) -->
+    <!-- Header Section -->
     <header>
         <div class="logo">
             <span style="font-size: 1.5rem; font-weight: bold;">बेटिङ सहयोगी</span>
@@ -29,15 +28,15 @@
         <div class="user-status">
             <!-- User Info - Initially Hidden -->
             <div id="user-info" style="display: none;">
-                <span class="user-icon">👤</span> नमस्ते, <span id="user-name">User</span>! <!-- Changed Welcome -->
+                <span class="user-icon">👤</span> नमस्ते, <span id="user-name">User</span>!
             </div>
             <!-- Logout Button - Initially Hidden -->
             <button id="logout-btn" class="auth-button" style="display: none;">
-                <span class="icon">🚪</span> बाहिरिनुहोस् <!-- Logout Text -->
+                <span class="icon">🚪</span> बाहिरिनुहोस्
             </button>
             <!-- Login Button - Initially Visible -->
             <button id="login-header-btn" class="auth-button">
-                <span class="icon">🔑</span> Login <!-- Keep Login in English? -->
+                <span class="icon">🔑</span> Login
             </button>
         </div>
     </header>
@@ -48,7 +47,7 @@
         <!-- Introduction Section -->
         <section class="intro-section">
             <h1>बेटिङ सहयोगी एपमा यहाँहरुलाई स्वागत छ</h1>
-            <p class="subtitle">अनलाइन सट्टाबाजीबाट सुनिश्चित नाफा कमाउन सजिलो तरिका।</p> <!-- Added subtitle -->
+            <p class="subtitle">अनलाइन सट्टाबाजीबाट सुनिश्चित नाफा कमाउन सजिलो तरिका।</p>
 
             <!-- Proceed Button -->
             <button id="proceed-btn" class="proceed-button large-button">
@@ -70,17 +69,15 @@
 
         <!-- Demo Section -->
         <section class="demo-section" id="demo-start">
-            <!-- Added ID for the "Try it" link -->
             <h2>कसरी हिसाब गर्ने? यहाँ हेर्नुहोस्!</h2>
             <p>तल दिइएको उदाहरण प्रयोग गरेर सजिलै बुझ्नुहोस्।</p>
-            <!-- Optional: Link/Button to scroll to demo -->
+            <!-- Link/Button to scroll to demo -->
             <a href="#demo-start" class="try-button">म एक चोटि प्रयोग गर्छु</a>
 
             <div class="demo-layout">
-                <!-- Demo Site 1 -->
+                <!-- Demo Site 1: 1xBet -->
                 <div class="demo-site">
                     <h3>साइट १: 1xBet (उदाहरण)</h3>
-                    <!-- Placeholder for image -->
                     <div class="demo-image-placeholder">
                         <img src="https://via.placeholder.com/300x200/eeeeee/cccccc?text=1xBet+Screenshot" alt="1xBet Odds Example">
                     </div>
@@ -88,7 +85,8 @@
                         <p>Kings XI Punjab (W1) = <strong>1.749</strong></p>
                         <p>Lucknow Super Giant (W2) = <strong>2.112</strong></p>
                     </div>
-                    <form id="demo-form-1">
+                    <!-- Separate form for clarity, though not strictly needed -->
+                    <form id="demo-form-1" action="javascript:void(0);">
                         <div class="input-group">
                             <label for="site1-w1-odds">Kings XI Punjab (W1) को Odd:</label>
                             <input type="number" id="site1-w1-odds" name="site1_w1" step="any" required placeholder="1.749">
@@ -102,25 +100,27 @@
                     </form>
                 </div>
 
-                <!-- Demo Site 2 -->
+                <!-- Demo Site 2: BC.Game -->
                 <div class="demo-site">
                     <h3>साइट २: BC.Game (उदाहरण)</h3>
-                    <!-- Placeholder for image -->
                     <div class="demo-image-placeholder">
                         <img src="https://via.placeholder.com/300x200/eeeeee/cccccc?text=BC.Game+Screenshot" alt="BC.Game Odds Example">
                     </div>
                     <div class="odds-display">
-                      <p>Kings XI Punjab (W1) = <strong>1.86</strong></p> <!-- Corrected Label -->
-                      <p>Lucknow Super Giant (W2) = <strong>2.08</strong></p> <!-- Corrected Label -->
+                      <!-- Corrected Odds Display for BC.Game -->
+                      <p>Lucknow Super Giant (W1) = <strong>1.86</strong></p>
+                      <p>Kings XI Punjab (W2) = <strong>2.08</strong></p>
                     </div>
-                    <form id="demo-form-2">
+                    <form id="demo-form-2" action="javascript:void(0);">
                         <div class="input-group">
-                            <label for="site2-w1-odds">Kings XI Punjab (W1) को Odd:</label> <!-- Corrected Label -->
+                             <!-- Label matches input ID -->
+                            <label for="site2-w1-odds">Lucknow Super Giant (W1) को Odd:</label>
                             <input type="number" id="site2-w1-odds" name="site2_w1" step="any" required placeholder="1.86">
                             <span class="error-message" id="site2-w1-error"></span>
                         </div>
                         <div class="input-group">
-                            <label for="site2-w2-odds">Lucknow Super Giant (W2) को Odd:</label> <!-- Corrected Label -->
+                            <!-- Label matches input ID -->
+                            <label for="site2-w2-odds">Kings XI Punjab (W2) को Odd:</label>
                             <input type="number" id="site2-w2-odds" name="site2_w2" step="any" required placeholder="2.08">
                             <span class="error-message" id="site2-w2-error"></span>
                         </div>
@@ -142,9 +142,9 @@
 
             <!-- Demo Results Section (Initially Hidden) -->
             <div id="demo-results" class="results-section" style="display: none;">
-                <h3 id="result-message"></h3> <!-- For Success/Failure message -->
+                <h3 id="result-message"></h3> <!-- Success/Failure message -->
                 <div id="result-details">
-                    <!-- Details will be populated by JS -->
+                    <!-- Details populated by JS -->
                 </div>
                 <p class="profit-text" id="result-profit"></p>
                 <button id="show-fixed-bet-btn" class="secondary-button" style="display: none;">
@@ -156,14 +156,18 @@
             <div id="fixed-bet-section" class="fixed-bet-area" style="display: none;">
                 <h4>एउटा सट्टा फिक्स गर्नुहोस्:</h4>
                 <div class="fixed-bet-options">
+                    <!-- **** UPDATED Radio buttons **** -->
                     <label>
-                        <input type="radio" name="fixed_bet_team" value="site1_w2" data-site="1xBet" data-team="Lucknow">
-                        1xBet मा Lucknow मा
+                        <!-- Value "teamA" corresponds to Kings in this demo after calculation -->
+                        <input type="radio" name="fixed_bet_team" value="teamA">
+                        <span id="fixed-teamA-label">टीम A फिक्स</span> <!-- JS Updates This Text -->
                     </label>
                     <label>
-                        <input type="radio" name="fixed_bet_team" value="site2_w1" data-site="BC.Game" data-team="Kings">
-                         BC.Game मा Kings XI Punjab मा
+                         <!-- Value "teamB" corresponds to Lucknow in this demo after calculation -->
+                        <input type="radio" name="fixed_bet_team" value="teamB">
+                         <span id="fixed-teamB-label">टीम B फिक्स</span> <!-- JS Updates This Text -->
                     </label>
+                    <!-- ******************************** -->
                 </div>
                  <span class="error-message" id="fixed-team-error"></span>
                 <div class="input-group">
@@ -181,14 +185,13 @@
 
     </div> <!-- End .container -->
 
-    <!-- Footer Section (Remains the same) -->
+    <!-- Footer Section -->
     <footer>
         <p>© 2024 बेटिङ सहयोगी. All Rights Reserved.</p>
     </footer>
 
-    <!-- Login Modal (Structure remains the same) -->
+    <!-- Login Modal (No changes needed here) -->
     <div id="login-modal-overlay" class="modal-overlay" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="login-modal-title">
-        <!-- Content from previous version -->
         <div id="login-modal-content">
             <button id="modal-close-btn" class="modal-close-btn" aria-label="Close Login Modal">×</button>
             <form id="login-form" action="javascript:void(0);" aria-describedby="login-error-message">
@@ -208,18 +211,17 @@
                  <button type="submit" id="login-submit-btn" class="auth-button submit-login">
                     <span class="icon">🚀</span> Login
                 </button>
-                <div id="login-error-message" class="error-message" aria-live="polite"></div>
+                <div id="login-error-message" class="error-message login-error" aria-live="polite"></div> <!-- Added login-error class -->
             </form>
         </div>
     </div>
 
-    <!-- Confirmation Modal (Structure remains the same) -->
+    <!-- Confirmation Modal (No changes needed here) -->
     <div id="confirmation-modal-overlay" class="modal-overlay" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="confirmation-modal-title">
-        <!-- Content from previous version -->
          <div id="confirmation-modal-content">
              <h3 id="confirmation-modal-title">Session Conflict Detected</h3>
              <p id="confirmation-modal-message">
-                 This email is already logged in... Do you wish to proceed? <!-- Shortened text -->
+                 This email is already logged in... Do you wish to proceed?
              </p>
              <div class="confirmation-modal-actions">
                  <button id="confirm-cancel-btn" class="auth-button cancel-button">
@@ -232,11 +234,8 @@
         </div>
     </div>
 
-    <!-- Link to JavaScript file -->
+    <!-- Link to JavaScript file (ensure this is the last thing before </body>) -->
     <script src="app.js"></script>
-    <!-- Separate JS for demo logic might be cleaner later -->
-    <!-- <script src="demo.js"></script> -->
-
 
 </body>
-                    </html>
+</html>
