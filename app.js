@@ -140,15 +140,17 @@ document.addEventListener('DOMContentLoaded', () => {
          confirmationModalOverlay.setAttribute('aria-hidden', 'true');
      }
 
-    function resetLoginAttemptState(errorMessage = '') {
-        isLoginSubmitting = false;
-        pendingForceLoginDetails = null;
-        if (loginSubmitBtn) {
-             loginSubmitBtn.disabled = false;
-             loginSubmitBtn.innerHTML = '<span class="icon">🚀</span> Login';
-        }
-        setStatusMessage(loginErrorMessage, errorMessage, 'error');
+    // 3. Fixed Reset Login State Function
+function resetLoginAttemptState(errorMessage = '') {
+    console.log("Resetting login attempt state. Error:", errorMessage);
+    isLoginSubmitting = false;
+    pendingForceLoginDetails = null;
+    if (loginSubmitBtn) {
+        loginSubmitBtn.disabled = false;
+        loginSubmitBtn.innerHTML = '<span class="icon">🚀</span> Login';
     }
+    setStatusMessage(loginErrorMessage, errorMessage, 'error');
+}
 
 
     // --- Core Auth Functions ---
@@ -188,65 +190,71 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    async function performLoginRequest(name, email, password, forceLogin = false) {
-        if (isLoginSubmitting) return; // Prevent double clicks
-        isLoginSubmitting = true;
+// 2. Fixed performLoginRequest function
+async function performLoginRequest(name, email, password, forceLogin = false) {
+    if (isLoginSubmitting && !forceLogin) return; // Prevent double clicks, but allow forced login
+    
+    isLoginSubmitting = true;
+    if (loginSubmitBtn) {
         loginSubmitBtn.disabled = true;
         loginSubmitBtn.innerHTML = '<span class="icon">⏳</span> Logging In...';
-        setStatusMessage(loginErrorMessage, '', 'info'); // Clear previous errors
+    }
+    setStatusMessage(loginErrorMessage, '', 'info'); // Clear previous errors
 
-        console.log(`Attempting login: ${email}, Force: ${forceLogin}`);
+    console.log(`Attempting login: ${email}, Force: ${forceLogin}`);
 
-        try {
-            const response = await fetch('/api/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({ name, email, password, forceLogin })
-            });
+    try {
+        const response = await fetch('/api/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ name, email, password, forceLogin })
+        });
 
-            const data = await response.json();
+        const data = await response.json();
 
-            if (response.ok && data.status === 'success') {
-                // SUCCESS
-                console.log("Login successful:", data);
-                currentUser = { name: data.name, email: email }; // Store user data from response
-                hideLoginModal(); // Close modal
-                updateUI(); // Update header etc.
-                // No need to manually set state here, checkSession on next load will confirm
+        if (response.ok && data.status === 'success') {
+            // SUCCESS
+            console.log("Login successful:", data);
+            currentUser = { name: data.name, email: email }; // Store user data from response
+            hideLoginModal(); // Close modal
+            updateUI(); // Update header etc.
+            // Reset all state
+            isLoginSubmitting = false;
+            // No need to manually set state here, checkSession on next load will confirm
 
-            } else if (response.status === 409 && data.conflict) {
-                // CONFLICT - Ask user to force
-                console.log("Login conflict detected.");
-                setStatusMessage(loginErrorMessage, data.message || 'Already logged in elsewhere.', 'error');
-                pendingForceLoginDetails = { name, email, password }; // Store details for confirmation
-                showConfirmationModal();
-                // Keep login button disabled until user confirms/cancels
+        } else if (response.status === 409 && data.conflict) {
+            // CONFLICT - Ask user to force
+            console.log("Login conflict detected.");
+            setStatusMessage(loginErrorMessage, data.message || 'Already logged in elsewhere.', 'error');
+            pendingForceLoginDetails = { name, email, password }; // Store details for confirmation
+            showConfirmationModal();
+            // Keep login button disabled until user confirms/cancels
 
-            } else {
-                // OTHER ERRORS (400, 401, 500, etc.)
-                console.error("Login failed:", response.status, data);
-                const errorMessage = data.error || 'Login failed. Please check details or try again later.';
-                resetLoginAttemptState(errorMessage);
-            }
+        } else {
+            // OTHER ERRORS (400, 401, 500, etc.)
+            console.error("Login failed:", response.status, data);
+            const errorMessage = data.error || 'Login failed. Please check details or try again later.';
+            resetLoginAttemptState(errorMessage);
+        }
 
-        } catch (error) {
-            console.error('Network error during login:', error);
-            resetLoginAttemptState('Login failed due to network error. Please check connection.');
-        } finally {
-            // Only re-enable if not waiting for confirmation
-            if (!pendingForceLoginDetails) {
-                isLoginSubmitting = false;
-                // Ensure button state is correct if login didn't succeed or lead to conflict modal
-                if (!currentUser && loginSubmitBtn && loginSubmitBtn.disabled) {
-                    loginSubmitBtn.disabled = false;
-                    loginSubmitBtn.innerHTML = '<span class="icon">🚀</span> Login';
-                }
+    } catch (error) {
+        console.error('Network error during login:', error);
+        resetLoginAttemptState('Login failed due to network error. Please check connection.');
+    } finally {
+        // Reset state always, unless we're waiting for confirmation
+        if (pendingForceLoginDetails === null) {
+            isLoginSubmitting = false;
+            // Only reset the button if not successful (currentUser not set)
+            if (!currentUser && loginSubmitBtn && loginSubmitBtn.disabled) {
+                loginSubmitBtn.disabled = false;
+                loginSubmitBtn.innerHTML = '<span class="icon">🚀</span> Login';
             }
         }
     }
+}
 
     function handleLoginSubmit(event) {
         event.preventDefault(); // Prevent default form submission
@@ -262,20 +270,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function handleForcedLogin() {
-        if (pendingForceLoginDetails) {
-            hideConfirmationModal();
-            const { name, email, password } = pendingForceLoginDetails;
-            pendingForceLoginDetails = null; // Clear pending state
-            console.log("User confirmed force login.");
-            // Re-attempt login with forceLogin = true
-            performLoginRequest(name, email, password, true);
-        } else {
-             console.warn("handleForcedLogin called without pending details.");
-             hideConfirmationModal(); // Hide modal just in case
-             resetLoginAttemptState('An error occurred. Please try logging in again.'); // Reset main form
-        }
+    if (pendingForceLoginDetails) {
+        const { name, email, password } = pendingForceLoginDetails;
+        pendingForceLoginDetails = null; // Clear pending state BEFORE hiding modal
+        hideConfirmationModal();
+        console.log("User confirmed force login.");
+        // Re-attempt login with forceLogin = true
+        performLoginRequest(name, email, password, true);
+    } else {
+        console.warn("handleForcedLogin called without pending details.");
+        hideConfirmationModal(); // Hide modal just in case
+        resetLoginAttemptState('An error occurred. Please try logging in again.'); // Reset main form
     }
-
+    }
+    
     async function performLogoutRequest() {
          console.log("Attempting logout via POST /api/logout...");
          try {
