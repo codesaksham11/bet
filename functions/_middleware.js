@@ -1,7 +1,8 @@
-// /functions/_middleware.js
+// /functions/b.html.js
 
 /**
- * Helper function to parse cookies from the Request headers.
+ * Helper function to parse a specific cookie from the Request headers.
+ * (Identical to the one in other files)
  * @param {Request} request - The incoming Request object.
  * @param {string} name - The name of the cookie to retrieve.
  * @returns {string | null} - The value of the cookie or null if not found.
@@ -13,171 +14,177 @@ function getCookie(request, name) {
         const cookies = cookieString.split(';');
         cookies.forEach(cookie => {
             const parts = cookie.split('=');
-            const cookieName = parts.shift()?.trim();
-            const cookieValue = parts.join('=').trim(); // Handles potential '=' in value
+            const cookieName = decodeURIComponent(parts.shift()?.trim() || '');
             if (cookieName === name) {
-                result = cookieValue;
+                result = decodeURIComponent(parts.join('=').trim());
             }
         });
     }
     return result;
 }
 
-// Define the paths that require short-lived access token authentication
-// This likely remains the same as before.
-const PROTECTED_PATHS = [
-    '/b.html'
-    // Add other paths that should use the short-lived token here
-];
-
 /**
- * Creates the custom HTML error response for authorization failures.
- * (This function remains unchanged from your previous version)
- * @param {Request} request - The original request object to get the base URL.
- * @returns {Response} - An HTML response object indicating authorization is required.
+ * Generates the HTML response for access denied errors.
+ * @param {string} nepaliTitle - The main error title in Nepali.
+ * @param {string} nepaliMessage - The detailed error message in Nepali.
+ * @returns {Response} - An HTML response object.
  */
-function createAuthErrorResponse(request) {
-    const baseUrl = new URL(request.url).origin;
-    const htmlBody = `
+function createAccessDeniedResponse(nepaliTitle, nepaliMessage) {
+    const html = `
 <!DOCTYPE html>
 <html lang="ne">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>पहुँच अस्वीकृत</title> <!-- Title changed slightly -->
+    <title>${nepaliTitle}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Noto Sans Devanagari', sans-serif; background-color: #f4f7f6; color: #333; display: flex; justify-content: center; align-items: center; min-height: 100vh; text-align: center; padding: 20px; line-height: 1.8; }
-        .container { background-color: #fff; padding: 40px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); max-width: 500px; }
-        h1 { color: #e74c3c; margin-bottom: 20px; font-size: 1.8em; }
-        p { font-size: 1.1em; margin-bottom: 25px; }
-        a { display: inline-block; background-color: #007bff; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: 600; transition: background-color 0.3s ease; }
-        a:hover { background-color: #0056b3; }
-        img.warning-image { max-width: 80px; margin-bottom: 20px; } /* Adjusted image style slightly */
+        body {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            background-color: #f8f9fa;
+            color: #343a40;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+        }
+        .icon {
+            font-size: 3rem;
+            color: #dc3545; /* Red for error */
+            margin-bottom: 15px;
+        }
+        h1 {
+            color: #dc3545;
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+        }
+        p {
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            color: #6c757d;
+        }
+        .button {
+            display: inline-block;
+            padding: 12px 25px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Consider a different icon/image for access denied vs. login required -->
-        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiNlN
-      zRjM2MiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBjbGFzcz0iZmVhdGhlciBmZWF0aGVyLXgtb2N0YWdvbiI+PHBvbHlnb24gcG9pbnRzPSI3Ljg2IDIgMTYuMTQgMiAxOS4xNCA3Ljg2IDE5LjE0IDE2LjE0IDE2LjE0IDIyIDcuODYgMjIgNC44NiAxNi4xNCA0Ljg2IDcuODYgNy44NiAyIj48L3BvbHlnb24+PGxpbmUgeDE9IjE1IiB5MT0iOSIgeDI9IjkiIHkyPSIxNSI+PC9saW5lPjxsaW5lIHgxPSI5IiB5MT0iOSIgeDI9IjE1IiB5Mj0iMTUiPjwvbGluZT48L3N2Zz4=" alt="Warning" class="warning-image">
-        <h1>पहुँच अस्वीकृत!</h1>
-        <p>यो पृष्ठ हेर्न तपाईंको पहुँच मान्य छैन वा समाप्त भएको छ। कृपया फेरि प्रयास गर्न मुख्य पृष्ठमा जानुहोस्।</p> <!-- Message updated -->
-        <a href="${baseUrl}/">मुख्य पेजमा फर्कनुहोस्</a>
+        <div class="icon">❌</div>
+        <h1>${nepaliTitle}</h1>
+        <p>${nepaliMessage}</p>
+        <a href="/" class="button">मुख्य पृष्ठमा फर्कनुहोस्</a>
     </div>
 </body>
 </html>
-`; // Note: Base64 image data truncated for brevity
-
-    return new Response(htmlBody, {
-        status: 403, // Forbidden - More appropriate than 401 if they had a token but it's invalid/expired
+    `;
+    return new Response(html, {
+        status: 403, // Forbidden
         headers: { 'Content-Type': 'text/html; charset=utf-8' }
     });
 }
 
 
-// --- Middleware Logic ---
-
 /**
- * Middleware function to protect specific paths by validating a short-lived access token.
- * @param {EventContext<Env, Params, Data>} context - The function context.
+ * Middleware function for /b.html.
+ * Verifies the 'access_token' cookie before allowing access.
+ * @param {EventContext<Env, any, any>} context - The function context.
  */
 export async function onRequest(context) {
-    const { request, next, env } = context;
-    const url = new URL(request.url);
-    const pathname = url.pathname;
+    const { request, env, next } = context;
+    const functionName = "[b.html middleware]"; // For logging
 
-    // 1. Check if the requested path needs protection by this middleware
-    const requiresAccessTokenAuth = PROTECTED_PATHS.some(path =>
-        pathname === path || pathname.startsWith(path + '/')
-    );
-
-    if (!requiresAccessTokenAuth) {
-        // Path is not protected by this logic, pass to the next handler/function or serve the static asset.
-        console.log(`Middleware: Path ${pathname} does not require access token auth. Passing through.`);
-        return await next();
+    // This middleware should primarily protect GET requests for the page
+    if (request.method !== 'GET') {
+        console.log(`${functionName} Passing through non-GET request (${request.method}).`);
+        // Allow other methods (like OPTIONS for potential CORS, or POST if b.html had forms)
+        // If b.html APIs need protection, they should have their own middleware or check
+        return next(); // Pass control to the next handler (e.g., static asset server)
     }
 
-    // --- Access Token Protection Logic ---
-    console.log(`Middleware: Checking access token for protected path: ${pathname}`);
+    console.log(`${functionName} Intercepting GET request for /b.html.`);
 
-    // 2. Get the required KV Binding for short-lived tokens
-    // *** Ensure ACCESS_TOKENS is bound in your Cloudflare settings ***
+    // --- KV Binding ---
+    // Needs ACCESS_TOKENS KV to verify the token
     const ACCESS_TOKENS = env.ACCESS_TOKENS;
+
     if (!ACCESS_TOKENS) {
-         console.error("Middleware: Missing KV Binding! Ensure ACCESS_TOKENS is bound.");
-         // Return the custom error page for server config issues as well
-         return createAuthErrorResponse(request);
+        console.error(`${functionName} CRITICAL ERROR: Missing KV Binding! ACCESS_TOKENS is required.`);
+        // Show a generic server error page if KV is missing
+        return createAccessDeniedResponse(
+            'सर्भर त्रुटि',
+            'पृष्ठ लोड गर्न आवश्यक कन्फिगरेसन मिलेन। कृपया पछि प्रयास गर्नुहोस्।'
+        );
     }
 
-    // 3. Get the short-lived access_token cookie from the request
+    // --- Step 1: Check for the access_token cookie ---
     const accessToken = getCookie(request, 'access_token');
 
     if (!accessToken) {
-        // The required access token cookie is missing entirely.
-        console.log(`Middleware: Access denied to ${pathname}: Missing 'access_token' cookie.`);
-        // Return custom HTML error page
-        return createAuthErrorResponse(request);
+        console.log(`${functionName} Access denied: 'access_token' cookie missing.`);
+        return createAccessDeniedResponse(
+            'पहुँच अस्वीकृत',
+            'यो पृष्ठ प्रयोग गर्न तपाईंको पहुँच छैन वा समाप्त भएको छ।'
+        );
     }
 
-    // 4. Validate the access token by checking the ACCESS_TOKENS KV store
+    console.log(`${functionName} Found 'access_token': ${accessToken.substring(0,8)}... Verifying.`);
+
+    // --- Step 2: Verify the token against ACCESS_TOKENS KV ---
     try {
-        console.log(`Middleware: Validating access token: ${accessToken.substring(0, 8)}***`);
-        // Attempt to retrieve the token's data from KV.
-        // If the token exists and hasn't expired according to its TTL, this will return the stored value.
-        // If the token does not exist or has expired, this will return null.
-        const tokenDataJson = await ACCESS_TOKENS.get(accessToken);
+        const tokenData = await ACCESS_TOKENS.get(accessToken);
 
-        if (!tokenDataJson) {
-            // Token exists in the cookie, but it's not found in the KV store.
-            // This means the token is invalid, forged, or has expired.
-            console.log(`Middleware: Access denied to ${pathname}: Invalid or expired access token '${accessToken.substring(0, 8)}***'.`);
-
-            // Return custom HTML error page AND clear the invalid cookie
-            const errorResponse = createAuthErrorResponse(request);
-            const responseHeaders = new Headers(errorResponse.headers); // Copy existing headers (like Content-Type)
-            // Add header to clear the bad access_token cookie
-            responseHeaders.append('Set-Cookie', `access_token=; HttpOnly; Secure; Path=/; SameSite=Lax; Max-Age=0`);
-
-            return new Response(errorResponse.body, {
-                status: errorResponse.status, // Use the status from createAuthErrorResponse (e.g., 403)
-                headers: responseHeaders
-            });
+        if (!tokenData) {
+            console.log(`${functionName} Access denied: Token ${accessToken.substring(0,8)}... not found in KV (invalid or expired).`);
+            // Although the token exists in cookie, it's not valid server-side.
+            // We could clear the bad access_token cookie here too, but the denied page is sufficient.
+            return createAccessDeniedResponse(
+                'पहुँच अस्वीकृत',
+                'यो पृष्ठ प्रयोग गर्न तपाईंको पहुँच छैन वा समाप्त भएको छ।'
+            );
         }
 
-        // --- Access Token is Valid ---
-        console.log(`Middleware: Access granted to ${pathname} for access token ${accessToken.substring(0, 8)}***.`);
+        // Optional: Could parse tokenData if needed (e.g., logging user email)
+        // const parsedData = JSON.parse(tokenData);
+        // console.log(`${functionName} Access granted for token ${accessToken.substring(0,8)}... (Email: ${parsedData?.email || 'N/A'})`);
 
-        // Optional: Add user context to `context.data` if you stored useful info in the KV value
-        try {
-            const tokenData = JSON.parse(tokenDataJson);
-            // Ensure context.data exists
-            context.data = context.data || {};
-            // Add user info if available in the token data (e.g., if you stored email)
-            if (tokenData && tokenData.email) {
-                // You might not have the user's name easily available here, just the email.
-                context.data.user = { email: tokenData.email };
-                console.log(`Middleware: Added user email (${tokenData.email}) to context.data.`);
-            }
-        } catch (e) {
-            // Log if parsing fails, but don't block the request just for this.
-            console.warn("Middleware: Could not parse token data from ACCESS_TOKENS KV:", e);
-        }
+        console.log(`${functionName} Access granted for token ${accessToken.substring(0,8)}...`);
 
-        // Optional: One-Time Use Token?
-        // If you want the access token to be usable only *once*, delete it immediately after validation.
-        // This adds security but means the user needs a new token for *every* request to a protected resource within the 5-min window.
-        // await ACCESS_TOKENS.delete(accessToken); // Uncomment for strict one-time use
-
-        // 5. Allow access to the requested resource (e.g., b.html or the next function in the chain)
-        return await next();
+        // --- Step 3: Access Granted - Proceed to serve b.html ---
+        // Pass control to the default static asset handler
+        return next();
 
     } catch (error) {
-        // Handle potential errors during the KV lookup itself (e.g., network issues talking to KV)
-        console.error(`Middleware: Error during KV lookup for access token ${accessToken?.substring(0, 8)}*** -`, error);
-        // Return the custom error page in case of server-side validation errors
-        return createAuthErrorResponse(request);
+        console.error(`${functionName} UNEXPECTED ERROR during access token verification:`, error);
+        return createAccessDeniedResponse(
+            'आन्तरिक त्रुटि',
+            'पहुँच प्रमाणीकरण गर्दा त्रुटि भयो। कृपया पछि प्रयास गर्नुहोस्।'
+        );
     }
 }
