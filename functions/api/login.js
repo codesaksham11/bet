@@ -127,49 +127,59 @@ export async function onRequestPost(context) {
         console.log(`${functionName} Password verified for ${trimmedEmail}.`);
 
         // --- Step 5: Session Conflict Handling ---
-        const existingSessionTokenJson = await SESSION_MAP.get(trimmedEmail);
-        if (existingSessionTokenJson) {
-            console.log(`${functionName} Existing session found for email: ${trimmedEmail}.`);
+        // Fix for the oldSessionToken parsing in login.js
 
-            if (!forceLogin) {
-                console.log(`${functionName} Conflict: Returning 409 as forceLogin is false.`);
-                // Send a specific response so the frontend can ask the user
-                return new Response(JSON.stringify({
-                    conflict: true,
-                    message: 'This email is already associated with an active session.'
-                }), {
-                    status: 409, // Conflict
-                    headers: { 'Content-Type': 'application/json' }
-                });
-            } else {
-                // Force login: Invalidate the old session
-                console.log(`${functionName} Force login requested. Invalidating previous session for ${trimmedEmail}.`);
-                let oldSessionToken = null;
-                try {
-                    // Assume the token stored in SESSION_MAP might be JSON stringified or raw
-                    try { oldSessionToken = JSON.parse(existingSessionTokenJson); } catch { oldSessionToken = existingSessionTokenJson; }
+// In the "Step 5: Session Conflict Handling" section, replace this code:
 
-                    if (oldSessionToken && typeof oldSessionToken === 'string') {
-                        await SESSION_ID.delete(oldSessionToken);
-                        console.log(`${functionName} Deleted old session data from SESSION_ID (Token: ${oldSessionToken.substring(0,8)}...).`);
-                    } else {
-                         console.warn(`${functionName} Could not parse or invalid old session token found in SESSION_MAP for ${trimmedEmail}. Proceeding without deleting from SESSION_ID.`);
-                    }
-                } catch (deleteError) {
-                    // Log the error but proceed - failing to delete old session shouldn't block login
-                    console.error(`${functionName} Error deleting old session from SESSION_ID for ${trimmedEmail} (Token: ${oldSessionToken ? oldSessionToken.substring(0,8)+'...' : 'unknown'}).`, deleteError);
-                }
+if (existingSessionTokenJson) {
+    console.log(`${functionName} Existing session found for email: ${trimmedEmail}.`);
 
-                // Always delete the mapping regardless of SESSION_ID deletion success
-                try {
-                    await SESSION_MAP.delete(trimmedEmail);
-                    console.log(`${functionName} Deleted old session mapping from SESSION_MAP for ${trimmedEmail}.`);
-                } catch (mapDeleteError) {
-                     console.error(`${functionName} Error deleting old mapping from SESSION_MAP for ${trimmedEmail}.`, mapDeleteError);
-                     // Still proceed with login if possible
-                }
+    if (!forceLogin) {
+        console.log(`${functionName} Conflict: Returning 409 as forceLogin is false.`);
+        // Send a specific response so the frontend can ask the user
+        return new Response(JSON.stringify({
+            conflict: true,
+            message: 'This email is already associated with an active session.'
+        }), {
+            status: 409, // Conflict
+            headers: { 'Content-Type': 'application/json' }
+        });
+    } else {
+        // Force login: Invalidate the old session
+        console.log(`${functionName} Force login requested. Invalidating previous session for ${trimmedEmail}.`);
+        let oldSessionToken = null;
+        try {
+            // Assume the token stored in SESSION_MAP might be JSON stringified or raw
+            try { 
+                oldSessionToken = JSON.parse(existingSessionTokenJson); 
+            } catch(parseError) { 
+                // If parsing fails, it might be already a string
+                console.log(`${functionName} JSON parse failed for token, using raw string.`);
+                oldSessionToken = existingSessionTokenJson; 
             }
+
+            if (oldSessionToken && typeof oldSessionToken === 'string') {
+                await SESSION_ID.delete(oldSessionToken);
+                console.log(`${functionName} Deleted old session data from SESSION_ID (Token: ${oldSessionToken.substring(0,8)}...).`);
+            } else {
+                console.warn(`${functionName} Could not parse or invalid old session token found in SESSION_MAP for ${trimmedEmail}. Proceeding without deleting from SESSION_ID.`);
+                console.warn(`${functionName} Token type: ${typeof oldSessionToken}, Value: ${JSON.stringify(oldSessionToken)}`);
+            }
+        } catch (deleteError) {
+            // Log the error but proceed - failing to delete old session shouldn't block login
+            console.error(`${functionName} Error deleting old session from SESSION_ID for ${trimmedEmail} (Token: ${oldSessionToken ? oldSessionToken.substring(0,8)+'...' : 'unknown'}).`, deleteError);
         }
+
+        // Always delete the mapping regardless of SESSION_ID deletion success
+        try {
+            await SESSION_MAP.delete(trimmedEmail);
+            console.log(`${functionName} Deleted old session mapping from SESSION_MAP for ${trimmedEmail}.`);
+        } catch (mapDeleteError) {
+             console.error(`${functionName} Error deleting old mapping from SESSION_MAP for ${trimmedEmail}.`, mapDeleteError);
+             // Still proceed with login if possible
+        }
+    }
+}
 
         // --- Step 6: Create New Session ---
         const newSessionToken = generateSessionToken();
