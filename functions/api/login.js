@@ -63,7 +63,6 @@ export async function onRequestPost(context) {
         // --- Step 2: Input Validation ---
         const { name, email, password, forceLogin = false } = requestBody;
 
-        // Basic presence and type checks
         if (
             !name || typeof name !== 'string' || name.trim() === '' ||
             !email || typeof email !== 'string' || !email.includes('@') || // Basic email format check
@@ -86,10 +85,8 @@ export async function onRequestPost(context) {
 
         if (!storedUserDataJson) {
             console.log(`${functionName} Login failed: Email not found - ${trimmedEmail}`);
-            // Return a generic error message for security
             return new Response(JSON.stringify({ error: 'Invalid email or password.' }), {
-                status: 401, // Unauthorized
-                headers: { 'Content-Type': 'application/json' }
+                status: 401, headers: { 'Content-Type': 'application/json' }
             });
         }
 
@@ -97,91 +94,82 @@ export async function onRequestPost(context) {
         let storedUserData;
         try {
             storedUserData = JSON.parse(storedUserDataJson);
-            // ** SECURITY WARNING ** : This checks plain text passwords!
-            // You SHOULD store password hashes (e.g., using Argon2, bcrypt)
-            // and compare the hash of the submitted password with the stored hash.
+            // ** >>> SECURITY WARNING <<< **
+            // ** Storing and comparing plain text passwords is HIGHLY INSECURE! **
+            // ** You MUST replace this with password hashing (e.g., Argon2, bcrypt). **
+            // ** 1. When storing/registering: hash the password before USER_DATA.put() **
+            // ** 2. When logging in: hash the submittedPassword and compare the HASHES. **
             if (!storedUserData || typeof storedUserData.password !== 'string') {
                  throw new Error("Invalid stored user data format. Expected object with 'password' string.");
             }
         } catch (parseError) {
             console.error(`${functionName} CRITICAL ERROR: Failed to parse stored user data for email ${trimmedEmail}. Data: ${storedUserDataJson}`, parseError);
-            // Don't reveal internal details to the client
             return new Response(JSON.stringify({ error: 'An internal error occurred during login.' }), {
                 status: 500, headers: { 'Content-Type': 'application/json' }
             });
         }
 
-        const storedPassword = storedUserData.password;
+        const storedPassword = storedUserData.password; // This should be a HASH in a real application
 
-        // ** SECURITY WARNING **: Plain text password comparison. HIGHLY INSECURE.
-        if (submittedPassword !== storedPassword) {
+        // ** >>> SECURITY WARNING <<< ** : Plain text password comparison.
+        if (submittedPassword !== storedPassword) { // This comparison MUST be done with hashes
             console.log(`${functionName} Login failed: Password mismatch for email ${trimmedEmail}`);
-            // Return generic error
             return new Response(JSON.stringify({ error: 'Invalid email or password.' }), {
-                status: 401, // Unauthorized
-                headers: { 'Content-Type': 'application/json' }
+                status: 401, headers: { 'Content-Type': 'application/json' }
             });
         }
-        // ** END SECURITY WARNING **
+        // ** >>> END SECURITY WARNING <<< **
 
         console.log(`${functionName} Password verified for ${trimmedEmail}.`);
 
-        // --- Step 5: Session Conflict Handling ---
-        // Fix for the oldSessionToken parsing in login.js
+        // --- Step 5: Session Conflict Handling (Revised) ---
+        // Get the raw value (should be the session token string) from SESSION_MAP
+        const existingSessionToken = await SESSION_MAP.get(trimmedEmail);
 
-// In the "Step 5: Session Conflict Handling" section, replace this code:
+        // Check if it's a non-empty string (a valid token was found)
+        if (existingSessionToken && typeof existingSessionToken === 'string') {
+            console.log(`${functionName} Existing session found for email: ${trimmedEmail} (Token: ${existingSessionToken.substring(0,8)}...).`);
 
-if (existingSessionTokenJson) {
-    console.log(`${functionName} Existing session found for email: ${trimmedEmail}.`);
-
-    if (!forceLogin) {
-        console.log(`${functionName} Conflict: Returning 409 as forceLogin is false.`);
-        // Send a specific response so the frontend can ask the user
-        return new Response(JSON.stringify({
-            conflict: true,
-            message: 'This email is already associated with an active session.'
-        }), {
-            status: 409, // Conflict
-            headers: { 'Content-Type': 'application/json' }
-        });
-    } else {
-        // Force login: Invalidate the old session
-        console.log(`${functionName} Force login requested. Invalidating previous session for ${trimmedEmail}.`);
-        let oldSessionToken = null;
-        try {
-            // Assume the token stored in SESSION_MAP might be JSON stringified or raw
-            try { 
-                oldSessionToken = JSON.parse(existingSessionTokenJson); 
-            } catch(parseError) { 
-                // If parsing fails, it might be already a string
-                console.log(`${functionName} JSON parse failed for token, using raw string.`);
-                oldSessionToken = existingSessionTokenJson; 
-            }
-
-            if (oldSessionToken && typeof oldSessionToken === 'string') {
-                await SESSION_ID.delete(oldSessionToken);
-                console.log(`${functionName} Deleted old session data from SESSION_ID (Token: ${oldSessionToken.substring(0,8)}...).`);
+            if (!forceLogin) {
+                // User hasn't confirmed they want to override the existing session
+                console.log(`${functionName} Conflict: Returning 409 as forceLogin is false.`);
+                return new Response(JSON.stringify({
+                    conflict: true,
+                    message: 'This email is already associated with an active session.'
+                }), {
+                    status: 409, // Conflict
+                    headers: { 'Content-Type': 'application/json' }
+                });
             } else {
-                console.warn(`${functionName} Could not parse or invalid old session token found in SESSION_MAP for ${trimmedEmail}. Proceeding without deleting from SESSION_ID.`);
-                console.warn(`${functionName} Token type: ${typeof oldSessionToken}, Value: ${JSON.stringify(oldSessionToken)}`);
+                // Force login: Invalidate the old session
+                console.log(`${functionName} Force login requested. Invalidating previous session for ${trimmedEmail}.`);
+
+                // Delete old session data from SESSION_ID using the retrieved token
+                try {
+                    await SESSION_ID.delete(existingSessionToken); // Use the raw token string as the key
+                    console.log(`${functionName} Deleted old session data from SESSION_ID (Token: ${existingSessionToken.substring(0,8)}...).`);
+                } catch (deleteError) {
+                    // Log the error but proceed - failing to delete old session shouldn't block the new login
+                    console.error(`${functionName} Error deleting old session from SESSION_ID for ${trimmedEmail} (Token: ${existingSessionToken.substring(0,8)}...).`, deleteError);
+                }
+
+                // Delete the mapping from SESSION_MAP (always attempt this, even if SESSION_ID delete failed)
+                try {
+                    await SESSION_MAP.delete(trimmedEmail);
+                    console.log(`${functionName} Deleted old session mapping from SESSION_MAP for ${trimmedEmail}.`);
+                } catch (mapDeleteError) {
+                    console.error(`${functionName} Error deleting old mapping from SESSION_MAP for ${trimmedEmail}.`, mapDeleteError);
+                    // Still proceed with login if possible
+                }
             }
-        } catch (deleteError) {
-            // Log the error but proceed - failing to delete old session shouldn't block login
-            console.error(`${functionName} Error deleting old session from SESSION_ID for ${trimmedEmail} (Token: ${oldSessionToken ? oldSessionToken.substring(0,8)+'...' : 'unknown'}).`, deleteError);
+        } else if (existingSessionToken) {
+             // If a value exists in SESSION_MAP but it's not a string, something is wrong.
+             // Log a warning and try to delete the map entry anyway to clean up.
+             console.warn(`${functionName} Found unexpected non-string value in SESSION_MAP for ${trimmedEmail}. Type: ${typeof existingSessionToken}. Value: ${JSON.stringify(existingSessionToken)}. Attempting cleanup.`);
+              try { await SESSION_MAP.delete(trimmedEmail); } catch (e) { console.error(`${functionName} Error cleaning up invalid SESSION_MAP entry for ${trimmedEmail}:`, e); }
         }
 
-        // Always delete the mapping regardless of SESSION_ID deletion success
-        try {
-            await SESSION_MAP.delete(trimmedEmail);
-            console.log(`${functionName} Deleted old session mapping from SESSION_MAP for ${trimmedEmail}.`);
-        } catch (mapDeleteError) {
-             console.error(`${functionName} Error deleting old mapping from SESSION_MAP for ${trimmedEmail}.`, mapDeleteError);
-             // Still proceed with login if possible
-        }
-    }
-}
-
-        // --- Step 6: Create New Session ---
+        // --- Step 6: Create New Session (Revised) ---
         const newSessionToken = generateSessionToken();
         const sessionData = {
             email: trimmedEmail,
@@ -189,21 +177,27 @@ if (existingSessionTokenJson) {
             loggedInAt: Date.now()
         };
         const sessionDataJson = JSON.stringify(sessionData);
-        // Store the token itself (JSON stringified for safety) in the map
-        const sessionMapValue = JSON.stringify(newSessionToken);
+        // Store the RAW session token string in the map (email -> session_token)
+        const sessionMapValue = newSessionToken;
 
         try {
-            await SESSION_ID.put(newSessionToken, sessionDataJson, { expirationTtl: SESSION_TTL_SECONDS });
-            console.log(`${functionName} Stored new session data in SESSION_ID (Token: ${newSessionToken.substring(0,8)}...) with TTL ${SESSION_TTL_SECONDS}s.`);
+            // Use Promise.all to perform KV writes concurrently
+            await Promise.all([
+                SESSION_ID.put(newSessionToken, sessionDataJson, { expirationTtl: SESSION_TTL_SECONDS }),
+                SESSION_MAP.put(trimmedEmail, sessionMapValue, { expirationTtl: SESSION_TTL_SECONDS }) // Store raw token string
+            ]);
 
-            await SESSION_MAP.put(trimmedEmail, sessionMapValue, { expirationTtl: SESSION_TTL_SECONDS });
+            console.log(`${functionName} Stored new session data in SESSION_ID (Token: ${newSessionToken.substring(0,8)}...) with TTL ${SESSION_TTL_SECONDS}s.`);
             console.log(`${functionName} Stored new session mapping in SESSION_MAP for ${trimmedEmail}.`);
+
         } catch (kvPutError) {
              console.error(`${functionName} CRITICAL ERROR: Failed to store session data in KV. Email: ${trimmedEmail}`, kvPutError);
-             // Attempt to clean up if one put failed
-             try { await SESSION_ID.delete(newSessionToken); } catch {}
-             try { await SESSION_MAP.delete(trimmedEmail); } catch {}
-             return new Response(JSON.stringify({ error: 'Failed to create session. Please try again.' }), {
+             // Attempt to clean up potentially partially created session - don't await these cleanup deletes
+             SESSION_ID.delete(newSessionToken).catch(e => console.error(`${functionName} Cleanup Error deleting from SESSION_ID during failed PUT:`, e));
+             SESSION_MAP.delete(trimmedEmail).catch(e => console.error(`${functionName} Cleanup Error deleting from SESSION_MAP during failed PUT:`, e));
+
+             // Return 500 error to the client
+             return new Response(JSON.stringify({ error: 'Failed to create session due to a server issue. Please try again.' }), {
                 status: 500, headers: { 'Content-Type': 'application/json' }
             });
         }
@@ -231,7 +225,10 @@ if (existingSessionTokenJson) {
         });
 
     } catch (error) {
+        // Catch any unexpected errors not handled within specific steps
         console.error(`${functionName} UNEXPECTED ERROR in login handler:`, error);
+        // Log the stack trace if available for better debugging
+        console.error(error.stack || error.message);
         return new Response(JSON.stringify({ error: 'An unexpected internal server error occurred.' }), {
             status: 500,
             headers: { 'Content-Type': 'application/json' }
@@ -257,8 +254,7 @@ export async function onRequest(context) {
       status: 204, // No Content
       headers: {
         // IMPORTANT: Adjust Allow-Origin in production! Use your actual frontend domain.
-        // Using '*' is okay for development but insecure for production.
-        "Access-Control-Allow-Origin": "*", // Or "https://your-frontend-domain.com"
+        "Access-Control-Allow-Origin": "*", // Or "https://your-frontend-domain.com" // TODO: Change in production
         "Access-Control-Allow-Methods": "POST, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type", // Allow 'Content-Type' header
         "Access-Control-Allow-Credentials": "true", // Important for cookies
