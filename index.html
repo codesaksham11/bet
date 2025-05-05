@@ -335,7 +335,7 @@
         }
 
         /* State when modal is active */
-        .modal-overlay.active {
+        .modal-overlay.visible {
             opacity: 1;
             visibility: visible;
         }
@@ -572,9 +572,10 @@
             <h1>स्मार्ट बेटिङ, सुनिश्चित नाफा</h1>
             <p class="subtitle">बेटिङ सहयोगी प्रयोग गरेर विभिन्न साइटहरूमा उपलब्ध बेटिङ अवसरहरूबाट आफ्नो नाफा अधिकतम बनाउनुहोस्।</p>
             <!-- Link this button to the 'Learn More' section or directly to d.html if preferred -->
-            <a href="#learn-more" class="button button-primary">
+                        <button id="proceed-btn" type="button" class="button button-primary">
                 <span class="icon">🚀</span> अब सुरु गर्नुहोस्
-            </a>
+                        </button>
+            
              <!-- Status message area (Optional) -->
             <div id="proceed-status-message" class="status-message" role="status" aria-live="polite" style="margin-top: 1rem; font-weight: 600;"></div>
         </div>
