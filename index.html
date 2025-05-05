@@ -4,31 +4,597 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>बेटिङ सहयोगी - अनलाइन सट्टाबाट नाफा कमाउनुहोस्</title>
-    <link rel="stylesheet" href="style.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📈</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- Global Styles & Variables --- */
+        :root {
+            --primary-blue: #2d5d9e; /* Similar blue to the image's button */
+            --dark-blue: #1f3a66;   /* Darker blue for text/headings */
+            --light-gray: #f8f9fa;
+            --medium-gray: #e9ecef;
+            --dark-gray: #6c757d;
+            --text-color: #343a40;
+            --white: #ffffff;
+            --danger-red: #dc3545;
+            --success-green: #28a745;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth; /* For smooth scrolling */
+        }
+
+        body {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            background-color: var(--white); /* White background for the main page */
+            color: var(--text-color);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto; /* Center the container */
+            padding: 0 20px; /* Add side padding */
+            flex-grow: 1; /* Make container grow to fill space */
+            width: 100%;
+        }
+
+        /* --- Header Styles --- */
+        header {
+            background-color: var(--light-gray); /* Light background for header */
+            padding: 10px 0; /* Vertical padding */
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        header .container {
+             display: flex;
+             justify-content: space-between;
+             align-items: center;
+        }
+
+
+        .logo span {
+            font-size: 1.8rem; /* Slightly larger logo */
+            font-weight: 700; /* Bold */
+            color: var(--dark-blue);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px; /* Space between items */
+        }
+
+        .user-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            color: var(--dark-gray);
+        }
+
+        .user-icon {
+            font-size: 1.2rem;
+        }
+
+        /* --- Button Styles --- */
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px; /* Rounded corners */
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none; /* Remove underline from links styled as buttons */
+            text-align: center;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            line-height: 1.4; /* Adjust line height for icons */
+        }
+        .button .icon {
+            margin-right: 8px; /* Space between icon and text */
+        }
+
+        .button:active {
+             transform: scale(0.98); /* Slight press effect */
+        }
+
+        .button-primary {
+            background-color: var(--primary-blue);
+            color: var(--white);
+        }
+        .button-primary:hover {
+            background-color: #254a7d; /* Darker shade on hover */
+        }
+
+        .button-secondary {
+            background-color: transparent;
+            color: var(--primary-blue);
+            border: 1px solid var(--primary-blue);
+        }
+        .button-secondary:hover {
+            background-color: rgba(45, 93, 158, 0.1); /* Light blue background on hover */
+        }
+
+        .button-link-style {
+             background: none;
+             border: none;
+             color: var(--primary-blue);
+             font-weight: 600;
+             padding: 10px 0; /* Adjust padding */
+             text-decoration: underline;
+        }
+        .button-link-style:hover {
+             color: var(--dark-blue);
+             text-decoration: none;
+        }
+
+
+        /* --- Intro Section (Hero) --- */
+        .intro-section {
+            text-align: center;
+            padding: 60px 20px 40px; /* More top padding */
+        background-color: #00ffff;
+        color: var(--dark-blue) ;
+        }
+
+        .intro-section h1 {
+            font-size: 2.8rem; /* Larger headline */
+            color: var(--dark-blue);
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .intro-section .subtitle {
+            font-size: 1.2rem;
+            color: var(--dark-gray);
+            margin-bottom: 30px;
+            max-width: 600px; /* Limit width */
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .intro-image-placeholder {
+            width: 100%;
+            max-width: 350px; /* Control max image size */
+            height: auto; /* Maintain aspect ratio */
+            min-height: 250px; /* Ensure minimum height */
+            background-color: var(--medium-gray); /* Placeholder background */
+            border: 1px solid #ccc;
+            border-radius: 12px; /* Rounded corners for image */
+            margin: 30px auto; /* Center and add space */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark-gray);
+            font-size: 1.1rem;
+             /* Simulating the graphic look */
+             background-image: url("data:image/svg+xml,%3Csvg width='300' height='200' viewBox='0 0 300 200' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='300' height='200' fill='%23ffffff'/%3E%3C!-- Outline like phone --%3E%3Crect x='40' y='20' width='220' height='160' rx='15' ry='15' fill='none' stroke='%231f3a66' stroke-width='4'/%3E%3C!-- Pie Chart --%3E%3Ccircle cx='100' cy='70' r='30' fill='%23c6d7eF' /%3E%3Cpath d='M100 40 A 30 30 0 0 1 121.21 55 L 100 70 Z' fill='%232d5d9e'/%3E%3C!-- Bar Chart --%3E%3Crect x='80' y='130' width='20' height='30' fill='%23c6d7ef' rx='3'/%3E%3Crect x='115' y='115' width='20' height='45' fill='%23a0b8dc' rx='3'/%3E%3Crect x='150' y='100' width='20' height='60' fill='%237995c8' rx='3'/%3E%3Crect x='185' y='80' width='20' height='80' fill='%232d5d9e' rx='3'/%3E%3C!-- Lines --%3E%3Crect x='70' y='165' width='160' height='3' fill='%23e0e0e0'/%3E%3Crect x='70' y='173' width='160' height='3' fill='%23e0e0e0'/%3E%3C/svg%3E");
+             background-repeat: no-repeat;
+             background-position: center;
+             background-size: contain; /* Adjust as needed */
+        }
+
+
+        .intro-buttons {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column; /* Stack buttons vertically on small screens */
+            align-items: center;
+            gap: 15px;
+        }
+        @media (min-width: 500px) { /* Row layout for larger screens */
+             .intro-buttons {
+                flex-direction: row;
+                justify-content: center;
+             }
+        }
+
+
+        /* --- How It Works Section --- */
+        .how-it-works {
+            padding: 40px 20px;
+            background-color: var(--light-gray); /* Slightly different background */
+            border-top: 1px solid var(--medium-gray);
+             border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .how-it-works h2 {
+            text-align: center;
+            color: var(--dark-blue);
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+        }
+
+        .how-it-works ol {
+            list-style-position: inside; /* Numbers inside */
+            max-width: 700px;
+            margin: 0 auto;
+            padding-left: 0; /* Remove default padding */
+        }
+
+        .how-it-works li {
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+
+        /* --- Demo Section --- */
+        .demo-section {
+            padding: 50px 20px;
+            text-align: center;
+        }
+
+        .demo-section h2 {
+            color: var(--dark-blue);
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+        }
+         .demo-section > p { /* Target only the direct paragraph child */
+            color: var(--dark-gray);
+            margin-bottom: 30px;
+        }
+
+        .try-button { /* Style for the "Try it" button */
+            display: inline-block;
+            margin-bottom: 40px;
+            /* Using secondary style */
+            padding: 10px 20px;
+            border: 1px solid var(--primary-blue);
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            color: var(--primary-blue);
+            background-color: transparent;
+             transition: background-color 0.3s ease;
+        }
+         .try-button:hover {
+             background-color: rgba(45, 93, 158, 0.1);
+        }
+
+
+        /* Placeholder for Demo content styling - keeping minimal as requested */
+        .demo-layout {
+            display: flex;
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+            text-align: left; /* Align text left within demo boxes */
+        }
+
+        .demo-site {
+            border: 1px solid var(--medium-gray);
+            border-radius: 8px;
+            padding: 20px;
+            background-color: var(--white);
+            flex: 1 1 300px; /* Flex properties for layout */
+            max-width: 400px;
+        }
+         .demo-site h3 {
+            color: var(--dark-blue);
+            margin-bottom: 15px;
+            text-align: center;
+         }
+
+        .demo-image-placeholder {
+            background-color: var(--light-gray);
+            border: 1px solid var(--medium-gray);
+            height: 150px; /* Adjust as needed */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark-gray);
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+         .demo-image-placeholder img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+         }
+
+         .odds-display p {
+             margin-bottom: 8px;
+             font-size: 0.95rem;
+         }
+         .odds-display strong {
+             color: var(--primary-blue);
+         }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--dark-gray);
+        }
+        .input-group input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--medium-gray);
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .total-investment {
+            margin: 20px auto;
+            max-width: 400px;
+            text-align: left;
+        }
+
+        .calculate-button {
+             /* Using primary style */
+             background-color: var(--primary-blue);
+             color: var(--white);
+             padding: 12px 25px;
+             border-radius: 8px;
+             cursor: pointer;
+             font-family: inherit;
+             font-size: 1.1rem;
+             font-weight: 600;
+             border: none;
+             transition: background-color 0.3s ease;
+             margin-top: 10px;
+        }
+        .calculate-button:hover {
+            background-color: #254a7d;
+        }
+
+        .results-section {
+             margin-top: 30px;
+             padding: 20px;
+             border: 1px solid var(--medium-gray);
+             border-radius: 8px;
+             background-color: var(--light-gray);
+             max-width: 600px;
+             margin-left: auto;
+             margin-right: auto;
+             text-align: left;
+        }
+         .results-section h3 {
+             margin-bottom: 15px;
+             color: var(--dark-blue);
+         }
+         .profit-text {
+             font-weight: bold;
+             font-size: 1.1rem;
+             margin-top: 10px;
+         }
+         /* Basic styling for potential result details */
+         #result-details p { margin-bottom: 5px; }
+
+
+        .fixed-bet-area {
+            margin-top: 30px;
+            padding: 20px;
+            border: 1px solid var(--medium-gray);
+            border-radius: 8px;
+            background-color: var(--white);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: left;
+        }
+         .fixed-bet-area h4 {
+             margin-bottom: 15px;
+             color: var(--dark-blue);
+             text-align: center;
+         }
+         .fixed-bet-options {
+             display: flex;
+             justify-content: center;
+             gap: 20px;
+             margin-bottom: 15px;
+         }
+         .fixed-bet-options label {
+             cursor: pointer;
+         }
+
+
+        /* --- Footer Styles --- */
+        footer {
+            background-color: var(--dark-blue); /* Dark blue footer */
+            color: var(--white);
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px; /* Space above footer */
+        }
+
+        /* --- Modal Styles --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); /* Darker overlay */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0; /* Hidden by default */
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        /* Add 'visible' class via JS to show */
+        .modal-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #login-modal-content,
+        #confirmation-modal-content {
+            background-color: var(--white);
+            padding: 30px 40px; /* More padding */
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            width: 90%; /* Responsive width */
+            max-width: 450px; /* Standard max width */
+            position: relative;
+            text-align: center; /* Center modal content */
+        }
+
+        #confirmation-modal-content {
+             max-width: 400px;
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: var(--dark-gray);
+            cursor: pointer;
+        }
+
+        #login-modal-title,
+        #confirmation-modal-title {
+            color: var(--dark-blue);
+            margin-bottom: 25px;
+            font-size: 1.6rem;
+        }
+
+        #confirmation-modal-message {
+             margin-bottom: 25px;
+             color: var(--text-color);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left; /* Align labels left */
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--medium-gray);
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .submit-login { /* Specific style for login submit button */
+             width: 100%;
+             padding: 12px;
+             font-size: 1.1rem;
+             margin-top: 10px; /* Space above button */
+             background-color: var(--success-green); /* Green for login action */
+             color: var(--white);
+        }
+         .submit-login:hover {
+             background-color: #218838; /* Darker green */
+         }
+
+        .login-error {
+            color: var(--danger-red);
+            margin-top: 15px;
+            font-size: 0.9rem;
+            min-height: 1.2em; /* Reserve space */
+        }
+
+        .confirmation-modal-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .cancel-button {
+             background-color: var(--dark-gray);
+             color: var(--white);
+        }
+         .cancel-button:hover {
+              background-color: #5a6268;
+         }
+
+        .confirm-proceed {
+             background-color: var(--success-green);
+             color: var(--white);
+        }
+         .confirm-proceed:hover {
+             background-color: #218838;
+         }
+
+
+        /* --- Utility and Status Messages --- */
+        .status-message {
+            margin-top: 15px;
+            font-weight: bold;
+            min-height: 1.2em; /* Reserve space */
+        }
+        #proceed-status-message {
+             color: var(--success-green); /* Or danger red based on context */
+        }
+
+        .error-message {
+            color: var(--danger-red);
+            font-size: 0.85rem;
+            display: block; /* Ensure it takes space */
+            min-height: 1em; /* Reserve minimum space */
+            margin-top: 4px;
+        }
+
+        /* Hide elements controlled by JS initially */
+        #user-info, #logout-btn, #demo-results, #fixed-bet-section, #fixed-bet-results, #show-fixed-bet-btn {
+            display: none;
+        }
+
+    </style>
 </head>
 <body>
 
     <header>
-        <div class="logo">
-            <span style="font-size: 1.5rem; font-weight: bold;">बेटिङ सहयोगी</span>
-        </div>
-        <div class="user-status">
-            <!-- User Info - Controlled by JS -->
-            <div id="user-info" style="display: none;">
-                <span class="user-icon">👤</span> नमस्ते, <span id="user-name">User</span>!
+        <div class="container">
+            <div class="logo">
+                <span style="font-size: 1.5rem; font-weight: bold;">बेटिङ सहयोगी</span>
             </div>
-            <!-- Logout Button - Controlled by JS -->
-            <button id="logout-btn" type="button" class="auth-button" style="display: none;">
-                <span class="icon">🚪</span> बाहिरिनुहोस्
-            </button>
-            <!-- Login Button - Controlled by JS -->
-            <button id="login-header-btn" type="button" class="auth-button">
-                <span class="icon">🔑</span> Login
-            </button>
+            <div class="header-actions">
+                 <!-- Sign Up Button -->
+                 <a href="s.html" class="button button-secondary">
+                     <span class="icon">📝</span> निःशुल्क साइन अप
+                 </a>
+                 <div class="user-status">
+                     <!-- User Info - Controlled by JS -->
+                     <div id="user-info" style="display: none;">
+                         <span class="user-icon">👤</span> नमस्ते, <span id="user-name">User</span>!
+                     </div>
+                     <!-- Logout Button - Controlled by JS -->
+                     <button id="logout-btn" type="button" class="button button-secondary" style="display: none;">
+                         <span class="icon">🚪</span> बाहिरिनुहोस्
+                     </button>
+                     <!-- Login Button - Controlled by JS -->
+                     <button id="login-header-btn" type="button" class="button button-primary">
+                         <span class="icon">🔑</span> Login
+                     </button>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -38,10 +604,22 @@
             <h1>बेटिङ सहयोगी एपमा यहाँहरुलाई स्वागत छ</h1>
             <p class="subtitle">अनलाइन सट्टाबाजीबाट सुनिश्चित नाफा कमाउन सजिलो तरिका।</p>
 
-            <!-- **** CRITICAL: Added type="button" **** -->
-            <button id="proceed-btn" type="button" class="proceed-button large-button">
-                <span class="icon">💰</span> पैसा कमाउन सुरु गर्नुहोस्
-            </button>
+             <!-- Placeholder image matching the style -->
+            <div class="intro-image-placeholder" aria-label="Data analysis graphic with pie chart and bar chart">
+                 <!-- Background SVG is applied via CSS -->
+            </div>
+
+
+            <div class="intro-buttons">
+                 <!-- **** CRITICAL: Added type="button" **** -->
+                <button id="proceed-btn" type="button" class="button button-primary">
+                    <span class="icon">💰</span> पैसा कमाउन सुरु गर्नुहोस्
+                </button>
+                 <!-- Learn More / Sikhnuhos button -->
+                <a href="#demo-start" class="button button-link-style">
+                    <span class="icon">👇</span> सिक्नुहोस् (कसरी काम गर्छ)
+                </a>
+            </div>
             <div id="proceed-status-message" class="status-message" role="status" aria-live="polite"></div>
         </section>
 
@@ -55,22 +633,23 @@
             </ol>
         </section>
 
+        <!-- DEMO SECTION - Scroll target -->
         <section class="demo-section" id="demo-start">
             <h2>कसरी हिसाब गर्ने? यहाँ हेर्नुहोस्!</h2>
             <p>तल दिइएको उदाहरण प्रयोग गरेर सजिलै बुझ्नुहोस्।</p>
-            <a href="#demo-start" class="try-button">म एक चोटि प्रयोग गर्छु</a>
+            <!-- Removed redundant 'Try it' button, the "Sikhnuhos" button scrolls here -->
 
+            <!-- Demo Content (Kept as is functionally, styled above) -->
             <div class="demo-layout">
                 <div class="demo-site">
                     <h3>साइट १: 1xBet (उदाहरण)</h3>
                     <div class="demo-image-placeholder">
-                        <img src="https://via.placeholder.com/300x200/eeeeee/cccccc?text=1xBet+Screenshot" alt="1xBet Odds Example">
+                        <img src="https://via.placeholder.com/300x150/eeeeee/cccccc?text=1xBet+Screenshot" alt="1xBet Odds Example">
                     </div>
                     <div class="odds-display">
                         <p>Kings XI Punjab (W1) = <strong>1.749</strong></p>
                         <p>Lucknow Super Giant (W2) = <strong>2.112</strong></p>
                     </div>
-                    <!-- Removed unnecessary demo forms -->
                      <div class="input-group">
                          <label for="site1-w1-odds">Kings XI Punjab (W1) को Odd:</label>
                          <input type="number" id="site1-w1-odds" name="site1_w1" step="any" placeholder="1.749">
@@ -86,7 +665,7 @@
                 <div class="demo-site">
                     <h3>साइट २: BC.Game (उदाहरण)</h3>
                     <div class="demo-image-placeholder">
-                        <img src="https://via.placeholder.com/300x200/eeeeee/cccccc?text=BC.Game+Screenshot" alt="BC.Game Odds Example">
+                        <img src="https://via.placeholder.com/300x150/eeeeee/cccccc?text=BC.Game+Screenshot" alt="BC.Game Odds Example">
                     </div>
                     <div class="odds-display">
                       <p>Lucknow Super Giant (W1) = <strong>1.86</strong></p>
@@ -119,7 +698,7 @@
                 <h3 id="result-message"></h3>
                 <div id="result-details"></div>
                 <p class="profit-text" id="result-profit"></p>
-                <button id="show-fixed-bet-btn" type="button" class="secondary-button" style="display: none;">
+                <button id="show-fixed-bet-btn" type="button" class="button button-secondary" style="display: none; margin-top: 15px;">
                     🤔 मलाई एउटा एपमा फिक्स पैसा लाउनु छ
                 </button>
             </div>
@@ -143,11 +722,11 @@
                     <span class="error-message" id="fixed-amount-error"></span>
                 </div>
                 <button id="calculate-fixed-btn" type="button" class="calculate-button">हिसाब गर्नुहोस्</button>
-                <div id="fixed-bet-results" class="results-section" style="display: none;"></div>
+                <div id="fixed-bet-results" class="results-section" style="display: none; margin-top: 15px;"></div>
             </div>
         </section>
 
-    </div>
+    </div> <!-- End .container -->
 
     <footer>
         <p>© 2024 बेटिङ सहयोगी. All Rights Reserved.</p>
@@ -157,7 +736,6 @@
     <div id="login-modal-overlay" class="modal-overlay" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="login-modal-title">
         <div id="login-modal-content">
             <button id="modal-close-btn" type="button" class="modal-close-btn" aria-label="Close Login Modal">×</button>
-            <!-- ** IMPORTANT: Form itself prevents default via JS, no action needed here ** -->
             <form id="login-form" aria-describedby="login-error-message">
                 <h2 id="login-modal-title">Member Login</h2>
                 <div class="form-group">
@@ -172,8 +750,7 @@
                     <label for="password-input">Password:</label>
                     <input type="password" id="password-input" name="password" required placeholder="Enter your password" autocomplete="current-password">
                 </div>
-                <!-- ** Submit button triggers form submit event ** -->
-                 <button type="submit" id="login-submit-btn" class="auth-button submit-login">
+                 <button type="submit" id="login-submit-btn" class="button button-primary submit-login">
                     <span class="icon">🚀</span> Login
                 </button>
                 <div id="login-error-message" class="error-message login-error" aria-live="polite"></div>
@@ -184,15 +761,16 @@
     <!-- Confirmation Modal -->
     <div id="confirmation-modal-overlay" class="modal-overlay" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="confirmation-modal-title">
          <div id="confirmation-modal-content">
+             <button id="confirm-modal-close-btn" type="button" class="modal-close-btn" aria-label="Close Confirmation Modal">×</button> <!-- Added close button -->
              <h3 id="confirmation-modal-title">Session Conflict Detected</h3>
              <p id="confirmation-modal-message">
                  This email is already logged in... Do you wish to proceed?
              </p>
              <div class="confirmation-modal-actions">
-                 <button id="confirm-cancel-btn" type="button" class="auth-button cancel-button">
+                 <button id="confirm-cancel-btn" type="button" class="button cancel-button">
                      <span class="icon">❌</span> Cancel
                  </button>
-                 <button id="confirm-proceed-btn" type="button" class="auth-button proceed-button confirm-proceed">
+                 <button id="confirm-proceed-btn" type="button" class="button confirm-proceed">
                      <span class="icon">✔️</span> Proceed
                  </button>
              </div>
@@ -200,7 +778,79 @@
     </div>
 
     <!-- ** IMPORTANT: Script tag is the LAST element before </body> ** -->
+    <!-- Make sure you have an app.js file in the same directory -->
     <script src="app.js"></script>
+
+     <!-- Simple script to handle modal visibility (can be moved to app.js) -->
+     <script>
+         // Basic Modal Handling (Consider moving to app.js for cleaner separation)
+         const loginModalOverlay = document.getElementById('login-modal-overlay');
+         const confirmModalOverlay = document.getElementById('confirmation-modal-overlay');
+         const loginHeaderBtn = document.getElementById('login-header-btn');
+         const modalCloseBtns = document.querySelectorAll('.modal-close-btn'); // Select all close buttons
+         const confirmCancelBtn = document.getElementById('confirm-cancel-btn');
+
+         function showModal(modalOverlay) {
+            if(modalOverlay) {
+                 modalOverlay.classList.add('visible');
+                 modalOverlay.setAttribute('aria-hidden', 'false');
+                 // Focus first focusable element in modal if needed
+                 const firstFocusable = modalOverlay.querySelector('button, input, [href]');
+                 if(firstFocusable) firstFocusable.focus();
+            }
+         }
+
+         function hideModal(modalOverlay) {
+              if(modalOverlay) {
+                 modalOverlay.classList.remove('visible');
+                 modalOverlay.setAttribute('aria-hidden', 'true');
+              }
+         }
+
+         if (loginHeaderBtn) {
+             loginHeaderBtn.addEventListener('click', () => showModal(loginModalOverlay));
+         }
+
+         modalCloseBtns.forEach(btn => {
+             btn.addEventListener('click', (e) => {
+                 // Find the closest parent modal overlay and hide it
+                 const modalToHide = e.target.closest('.modal-overlay');
+                 hideModal(modalToHide);
+             });
+         });
+
+
+         if (confirmCancelBtn) {
+            confirmCancelBtn.addEventListener('click', () => hideModal(confirmModalOverlay));
+         }
+
+         // Close modal if clicking outside the content area
+         [loginModalOverlay, confirmModalOverlay].forEach(overlay => {
+             if (overlay) {
+                 overlay.addEventListener('click', (e) => {
+                     if (e.target === overlay) { // Check if the click is on the overlay itself
+                         hideModal(overlay);
+                     }
+                 });
+             }
+         });
+
+
+         // Add keyboard accessibility (Escape key to close)
+         document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const visibleModal = document.querySelector('.modal-overlay.visible');
+                if (visibleModal) {
+                    hideModal(visibleModal);
+                }
+            }
+         });
+
+         // Note: The actual login logic, logout, showing user info,
+         // confirmation logic, and calculation logic should reside in your app.js file.
+         // This inline script only handles basic modal visibility.
+
+     </script>
 
 </body>
 </html>
