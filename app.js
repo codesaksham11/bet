@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- DOM Elements (Login/Session related) ---
     const loginHeaderBtn = document.getElementById('login-header-btn');
     const logoutBtn = document.getElementById('logout-btn');
+    const signupHeaderBtn = document.getElementById('signup-header-btn');
     const userInfoDiv = document.getElementById('user-info');
     const userNameSpan = document.getElementById('user-name');
     const proceedBtn = document.getElementById('proceed-btn');
@@ -75,6 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (currentUser && currentUser.name) {
             // Logged In State
             if (loginHeaderBtn) loginHeaderBtn.style.display = 'none';
+            if (signupHeaderBtn) signupHeaderBtn.style.display = 'none';
             if (logoutBtn) logoutBtn.style.display = 'inline-flex';
             if (userInfoDiv) userInfoDiv.style.display = 'flex';
             if (userNameSpan) userNameSpan.textContent = currentUser.name;
@@ -93,6 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             // Logged Out State
             if (loginHeaderBtn) loginHeaderBtn.style.display = 'inline-flex';
+            if (signupHeaderBtn) signupHeaderBtn.style.display = 'inline-flex'; 
             if (logoutBtn) logoutBtn.style.display = 'none';
             if (userInfoDiv) userInfoDiv.style.display = 'none';
             if (userNameSpan) userNameSpan.textContent = '';
