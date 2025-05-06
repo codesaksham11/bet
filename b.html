@@ -1,41 +1,387 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ne">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arbitrage App - Dashboard</title>
-    <link rel="stylesheet" href="style.css">
-    <!-- Optional: Favicon -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📈</text></svg>">
+    <title>Arbitrage Betting Calculator</title>
+    <style>
+        /* Basic Reset and Body Styling */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Arial', 'Noto Sans Devanagari', sans-serif; /* Added Noto Sans Devanagari for better Nepali support */
+            background-color: #f0f4f8; /* Light, soothing background */
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 700px; /* Increased width */
+            margin: 30px auto;
+            background-color: #ffffff;
+            padding: 30px; /* Increased padding */
+            border-radius: 12px; /* Softer corners */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            text-align: center; /* Center align content within the container */
+        }
+
+        /* Title */
+        h1 {
+            color: #2c3e50; /* Dark blue-grey */
+            margin-bottom: 30px;
+            font-size: 1.8em; /* Larger title */
+        }
+
+        /* Input Sections (Boxes) */
+        .input-section {
+            background-color: #e9f1f9; /* Slightly different background for sections */
+            padding: 25px; /* Increased padding */
+            margin-bottom: 25px;
+            border-radius: 8px;
+            border: 1px solid #d1dff0;
+            text-align: left; /* Align labels/inputs left within the box */
+        }
+
+        .input-section h2 {
+            color: #34495e; /* Section title color */
+            margin-bottom: 20px;
+            font-size: 1.4em; /* Larger section titles */
+            text-align: center; /* Center section titles */
+            border-bottom: 1px solid #bdc3c7;
+            padding-bottom: 10px;
+        }
+
+        /* Input Groups (Label + Input) */
+        .input-group {
+            margin-bottom: 20px; /* Increased spacing */
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px; /* Increased space below label */
+            color: #555;
+            font-weight: bold;
+            font-size: 1.1em; /* Larger labels */
+        }
+
+        /* Styling for Text and Number Inputs */
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 15px; /* Increased padding for larger feel */
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1.1em; /* Larger font size inside inputs */
+            color: #333;
+        }
+
+        input[type="text"]::placeholder,
+        input[type="number"]::placeholder {
+            color: #999;
+            font-size: 1em; /* Adjust placeholder font size if needed */
+        }
+
+        /* Team Input Row Styling (using Flexbox for alignment) */
+        .team-odds-group {
+            display: flex;
+            gap: 15px; /* Space between team name and odds */
+            align-items: flex-end; /* Align items to the bottom */
+            margin-bottom: 15px;
+        }
+
+        .team-name-input {
+            flex: 2; /* Team name takes more space */
+        }
+
+        .odds-input {
+            flex: 1; /* Odds take less space */
+        }
+
+        .team-odds-group label {
+            font-size: 1em; /* Slightly smaller label within the group */
+            margin-bottom: 5px;
+        }
+
+        .arrow-separator {
+             font-size: 1.8em; /* Larger arrow */
+             color: #3498db; /* Vibrant blue */
+             padding: 0 10px;
+             line-height: 60px; /* Align arrow vertically with inputs */
+             font-weight: bold;
+        }
+
+        /* Action Button Styling */
+        .action-button {
+            display: inline-block;
+            background-color: #3498db; /* Vibrant blue */
+            color: #ffffff;
+            padding: 15px 30px; /* Larger padding */
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.2em; /* Larger font size */
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            margin-top: 20px; /* Space above the main button */
+        }
+
+        .action-button:hover {
+            background-color: #2980b9; /* Darker blue on hover */
+        }
+         .action-button:active {
+             transform: scale(0.98); /* Slight shrink on click */
+         }
+
+        /* Result Area Styling */
+        .result-section {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.1em;
+            display: none; /* Hidden by default */
+        }
+
+        .result-success {
+            background-color: #e8f8f5; /* Light green for success */
+            border: 1px solid #a9dfbf;
+            color: #1e8449;
+        }
+
+        .result-fail {
+            background-color: #fdedec; /* Light red for failure */
+            border: 1px solid #f5b7b1;
+            color: #c0392b;
+        }
+
+        .result-note {
+            margin-top: 15px;
+            font-size: 0.95em;
+            color: #555;
+        }
+
+        /* Algorithm Modal Styling */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1000; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0, 0, 0, 0.6); /* Black w/ opacity */
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto; /* Centered vertically and horizontally */
+            padding: 30px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 550px; /* Max width for modal */
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            text-align: left; /* Align content left within modal */
+        }
+
+         .modal-content h3 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #34495e;
+         }
+
+        .modal-content .input-group {
+            margin-bottom: 20px;
+        }
+
+        .modal-content .radio-group label {
+             display: inline-block; /* Radio labels side-by-side */
+             margin-right: 20px;
+             font-weight: normal;
+             font-size: 1.1em;
+         }
+         .modal-content .radio-group input[type="radio"] {
+             margin-right: 8px;
+             transform: scale(1.2); /* Slightly larger radio buttons */
+         }
+
+        .modal-content .action-button {
+            display: block; /* Make button full width in modal */
+            width: 100%;
+            margin-top: 25px;
+            background-color: #2ecc71; /* Green for calculation */
+        }
+         .modal-content .action-button:hover {
+             background-color: #27ae60; /* Darker green */
+         }
+
+
+        /* Final Result Area Styling (after algorithm) */
+         #resultArea2 {
+             margin-top: 30px;
+             padding: 25px;
+             border-radius: 8px;
+             background-color: #eaf2f8; /* Light blue background */
+             border: 1px solid #aed6f1;
+             color: #2e86c1;
+             text-align: left;
+             font-size: 1.1em;
+             display: none; /* Hidden by default */
+             line-height: 1.8;
+         }
+
+         #resultArea2 h3 {
+             text-align: center;
+             margin-bottom: 20px;
+             color: #1b4f72;
+         }
+
+         #resultArea2 p {
+             margin-bottom: 10px;
+         }
+         #resultArea2 strong {
+             color: #1a5276;
+         }
+
+
+    </style>
 </head>
 <body>
-    <header>
-        <div class="logo">
-            <span style="font-size: 1.5rem; font-weight: bold;">Arbitrage App</span>
-        </div>
-        <!-- Ideally, include user status/logout here too, loaded via JS if needed -->
-         <div class="user-status">
-            <!-- Add logout button or user info dynamically if needed -->
-             <a href="/" style="padding: 8px 15px; background-color: #eee; color: #333; border-radius: 5px; text-decoration: none;">Back to Home</a>
-        </div>
-    </header>
 
     <div class="container">
-        <h1>Arbitrage Dashboard</h1>
-        <p>Welcome! This is the protected area.</p>
-        <!-- Your application content goes here -->
-        <div id="app-content">
-            <!-- Example: Displaying arbitrage opportunities -->
-            <h2>Opportunities</h2>
-            <p>(Content will be loaded here...)</p>
+        <h1>तलको विवरण भर्नुहोस् र पैसा कमाउन सुरु गर्नुहोस्</h1>
+
+        <!-- Form for inputs -->
+        <form id="arbitrageForm" onsubmit="return false;"> <!-- Prevent default form submission -->
+
+            <!-- Box 1: First App/Website -->
+            <div class="input-section">
+                <h2>एप / वेबसाइट १ को नाम</h2>
+                <div class="input-group">
+                    <input type="text" id="app1Name" placeholder="एपको नाम लेख्नुहोस्">
+                </div>
+
+                <div class="team-odds-group">
+                    <div class="team-name-input">
+                        <label for="app1Team1Name">टिम १ को नाम:</label>
+                        <input type="text" id="app1Team1Name" placeholder="कुनै टिमको नाम">
+                    </div>
+                    <span class="arrow-separator">=></span>
+                    <div class="odds-input">
+                        <label for="app1Team1Odds">उसको ओड्स:</label>
+                        <input type="number" id="app1Team1Odds" step="any" placeholder="ओड्स">
+                    </div>
+                </div>
+
+                <div class="team-odds-group">
+                    <div class="team-name-input">
+                        <label for="app1Team2Name">टिम २ को नाम:</label>
+                        <input type="text" id="app1Team2Name" placeholder="अर्को टिमको नाम">
+                    </div>
+                     <span class="arrow-separator">=></span>
+                    <div class="odds-input">
+                        <label for="app1Team2Odds">उसको ओड्स:</label>
+                        <input type="number" id="app1Team2Odds" step="any" placeholder="ओड्स">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Box 2: Second App/Website -->
+            <div class="input-section">
+                 <h2>अर्को एप / वेबसाइटको नाम</h2>
+                <div class="input-group">
+                     <input type="text" id="app2Name" placeholder="एपको नाम लेख्नुहोस्">
+                </div>
+
+                <div class="team-odds-group">
+                    <div class="team-name-input">
+                        <label for="app2Team1Name">टिम १ को नाम:</label>
+                        <input type="text" id="app2Team1Name" placeholder="कुनै टिमको नाम"> <!-- Will be auto-filled/synced -->
+                    </div>
+                    <span class="arrow-separator">=></span>
+                    <div class="odds-input">
+                        <label for="app2Team1Odds">उसको ओड्स:</label>
+                        <input type="number" id="app2Team1Odds" step="any" placeholder="ओड्स">
+                    </div>
+                </div>
+
+                <div class="team-odds-group">
+                    <div class="team-name-input">
+                        <label for="app2Team2Name">टिम २ को नाम:</label>
+                        <input type="text" id="app2Team2Name" placeholder="अर्को टिमको नाम"> <!-- Will be auto-filled/synced -->
+                    </div>
+                    <span class="arrow-separator">=></span>
+                    <div class="odds-input">
+                        <label for="app2Team2Odds">उसको ओड्स:</label>
+                        <input type="number" id="app2Team2Odds" step="any" placeholder="ओड्स">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Box 3: Total Investment -->
+            <div class="input-section">
+                <h2>हजुरले लगाउने पैसा</h2>
+                <div class="input-group">
+                     <input type="number" id="totalInvestment" step="any" placeholder="हजुरले लाउने कुल धनराशि">
+                </div>
+            </div>
+
+            <!-- Check Button -->
+            <button type="button" id="checkOpportunityBtn" class="action-button">कमाउन मिल्छ कि नाइँ चेक गर्नुहोस्</button>
+
+        </form> <!-- End of Form -->
+
+        <!-- Result Area 1 (Initially Hidden) -->
+        <div id="resultArea1" class="result-section">
+            <p id="resultMessage1"></p>
+            <div id="resultNoteContainer" style="display: none;"> <!-- Container for note and button -->
+                 <p class="result-note">ख्याल गर्नुहोस्, यसरी दशमलव (decimal) मा पैसा लगाउँदा एपहरूको अल्गोरिदमले गर्दा हजुरमाथि शंका गर्न सक्छन्। अल्गोरिदमसँग बचेर पैसा लगाउन छ भने तल थिच्नुहोस्।</p>
+                 <button type="button" id="openAlgorithmModalBtn" class="action-button" style="background-color: #e67e22; margin-top: 15px;">अल्गोरिदमसँग बचेर पैसा लगाउँछु</button> <!-- Orange button -->
+             </div>
+        </div>
+
+        <!-- Result Area 2 (Algorithm-Adjusted Result - Initially Hidden) -->
+        <div id="resultArea2" class="result-section">
+             <!-- Content will be filled by JavaScript -->
+        </div>
+
+    </div> <!-- End of Container -->
+
+
+    <!-- Algorithm Adjustment Modal (Initially Hidden) -->
+    <div id="algorithmModal" class="modal">
+        <div class="modal-content">
+            <h3>अल्गोरिदमबाट बच्ने गणना</h3>
+
+            <div class="input-group radio-group">
+                 <label>हजुरलाई मन पर्ने एपमा क्लिक गर्नुहोस्:</label><br>
+                 <label>
+                     <input type="radio" name="preferredApp" id="prefApp1" value="app1"> <span id="modalApp1Name">एप १</span>
+                 </label>
+                 <label>
+                     <input type="radio" name="preferredApp" id="prefApp2" value="app2"> <span id="modalApp2Name">एप २</span>
+                 </label>
+            </div>
+
+            <div class="input-group">
+                <label for="usualBetAmount">यो एपमा तपाईंले प्रायः कति रुपैयाँ पैसा लाउनुहुन्छ?</label>
+                <input type="number" id="usualBetAmount" step="any" placeholder="यो एपमा प्रायः लगाउने पैसा">
+            </div>
+
+            <button type="button" id="calculateSafeBetBtn" class="action-button">गणना गर्नुहोस्</button>
         </div>
     </div>
 
-     <footer>
-        <p>© 2024 Arbitrage App. All Rights Reserved.</p>
-    </footer>
 
-    <!-- Optional: Link to specific JS for this page if needed -->
-    <!-- <script src="b_app.js"></script> -->
+     
+     <script src="b.js"></script> 
+
 </body>
-</html> 
+</html>
