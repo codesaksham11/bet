@@ -33,7 +33,7 @@ export async function onRequest(context) {
     // Only apply this logic strictly to requests for /b.html
     // This check might be redundant given the file placement, but it's safe.
     if (pathname !== '/b.html') {
-        console.log(`${functionName} Path is not /b.html (${pathname}), skipping check.`);
+        
         return await next(); // Continue to the next step (serving the file or 404)
     }
 
