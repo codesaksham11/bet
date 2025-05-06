@@ -149,7 +149,7 @@ export async function onRequestPost(context) {
         // Set HttpOnly cookie for the access token as well
         responseHeaders.append(
             'Set-Cookie',
-            `access_token=${accessToken}; HttpOnly; Secure; Path=/; SameSite=Lax; Max-Age=${ACCESS_TOKEN_TTL_SECONDS}`
+            `access_token=${accessToken}; Secure; Path=/; SameSite=Lax; Max-Age=${ACCESS_TOKEN_TTL_SECONDS}`
             // Note: Path=/ might need adjustment if b.html or its API calls are under a specific sub-path
         );
 
