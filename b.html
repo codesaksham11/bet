@@ -5,6 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arbitrage Betting Calculator</title>
     <style>
+        .back-button {
+            display: inline-block; /* Allows padding and margin */
+            padding: 10px 15px;   /* Makes the clickable area larger */
+            margin: 10px 0 5px 10px; /* Top, Right, Bottom, Left margins - Adjust as needed */
+            font-size: 1.8em;      /* Size of the arrow */
+            color: #3498db;        /* Arrow color (matches action button blue) */
+            text-decoration: none; /* Remove underline */
+            font-weight: bold;     /* Make arrow bolder */
+            border-radius: 5px;    /* Optional: slight rounding */
+            transition: background-color 0.2s ease; /* Smooth hover effect */
+        }
+        .back-button:hover {
+            color: #2980b9;        /* Darker blue on hover */
+            background-color: rgba(0, 0, 0, 0.05); /* Subtle background on hover */
+        }
+
+        /* Standard class to hide text visually but keep it for screen readers */
+        .visually-hidden {
+            border: 0;
+            clip: rect(0 0 0 0);
+            height: 1px;
+            margin: -1px;
+            overflow: hidden;
+            padding: 0;
+            position: absolute;
+            width: 1px;
+            white-space: nowrap; /* Prevent line breaks */
+        }
         /* Basic Reset and Body Styling */
         * {
             box-sizing: border-box;
@@ -77,7 +105,7 @@
             padding: 8px; /* Increased padding for larger feel */
             border: 1px solid #ccc;
             border-radius: 6px;
-            font-size: 1.1em; /* Larger font size inside inputs */
+            font-size: 0.8em; /* Larger font size inside inputs */
             color: #333;
         }
 
@@ -104,7 +132,7 @@
         }
 
         .team-odds-group label {
-            font-size: 1em; /* Slightly smaller label within the group */
+            font-size: 0.8em; /* Slightly smaller label within the group */
             margin-bottom: 5px;
         }
 
@@ -254,7 +282,10 @@
     </style>
 </head>
 <body>
-
+     <a href="index.html" class="back-button" aria-label="Go back to previous page">
+        ← <!-- HTML entity for left arrow ← -->
+        <span class="visually-hidden">Go Back</span> <!-- For screen readers -->
+     </a>
     <div class="container">
         <h1>तलको विवरण भर्नुहोस् र पैसा कमाउन सुरु गर्नुहोस्</h1>
 
