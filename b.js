@@ -1,3 +1,5 @@
+// b.js
+
 document.addEventListener('DOMContentLoaded', () => {
     // --- Get DOM Elements ---
     const app1NameInput = document.getElementById('app1Name');
@@ -37,75 +39,63 @@ document.addEventListener('DOMContentLoaded', () => {
         app2: { name: '', team1: '', odd1: 0, team2: '', odd2: 0 },
         bestOddTeam1: 0,
         bestOddTeam2: 0,
-        appForTeam1: '', // Which app has the best odd for team 1 ('app1' or 'app2')
-        appForTeam2: '', // Which app has the best odd for team 2
-        teamNameForOdd1: '', // Actual team name corresponding to bestOddTeam1
-        teamNameForOdd2: '', // Actual team name corresponding to bestOddTeam2
-        stake1: 0, // Ideal stake from initial calculation
-        stake2: 0, // Ideal stake from initial calculation
-        profit: 0, // Ideal profit from initial calculation
+        appForTeam1: '',
+        appForTeam2: '',
+        teamNameForOdd1: '',
+        teamNameForOdd2: '',
+        stake1: 0,
+        stake2: 0,
+        profit: 0,
         totalInvestment: 0,
-        margin: 1 // Default to no arbitrage
+        margin: 1
     };
 
     // --- Event Listeners ---
-
-    // Sync Team Names
     app1Team1NameInput.addEventListener('input', () => syncTeamName(app1Team1NameInput, app2Team1NameInput));
     app2Team1NameInput.addEventListener('input', () => syncTeamName(app2Team1NameInput, app1Team1NameInput));
     app1Team2NameInput.addEventListener('input', () => syncTeamName(app1Team2NameInput, app2Team2NameInput));
     app2Team2NameInput.addEventListener('input', () => syncTeamName(app2Team2NameInput, app1Team2NameInput));
 
-    // Main Check Button
-    checkOpportunityBtn.addEventListener('click', handleCheckOpportunity);
+    // MODIFIED: Event listener now points to the async wrapper
+    checkOpportunityBtn.addEventListener('click', wrappedHandleCheckOpportunity); // Changed from handleCheckOpportunity
 
-    // Open Modal Button
     openAlgorithmModalBtn.addEventListener('click', openModal);
-
-    // Calculate Safe Bet Button (in modal)
     calculateSafeBetBtn.addEventListener('click', handleCalculateSafeBet);
-
-    // Close Modal if clicked outside content
-     algorithmModal.addEventListener('click', (event) => {
-        if (event.target === algorithmModal) { // Check if the click is on the overlay
-             closeModal();
-         }
-     });
+    algorithmModal.addEventListener('click', (event) => {
+        if (event.target === algorithmModal) {
+            closeModal();
+        }
+    });
 
     // --- Functions ---
 
     function syncTeamName(sourceInput, targetInput) {
-        // Only update if the value is actually different to prevent potential sync issues/loops
         if (sourceInput.value !== targetInput.value) {
             targetInput.value = sourceInput.value;
         }
     }
 
     function displayResult(area, message, type = 'fail', showNote = false) {
-        const messageElement = area.id === 'resultArea1' ? resultMessage1 : area; // Use the area itself for resultArea2
+        const messageElement = area.id === 'resultArea1' ? resultMessage1 : area;
 
-        // Clear previous styles/content
         resultArea1.style.display = 'none';
         resultArea2.style.display = 'none';
-        resultArea1.classList.remove('result-success', 'result-fail');
-        resultArea2.classList.remove('result-success', 'result-fail'); // Clear resultArea2 styles as well
+        resultArea1.classList.remove('result-success', 'result-fail', 'result-info'); // Added result-info removal
+        resultArea2.classList.remove('result-success', 'result-fail', 'result-info');
 
-
-        messageElement.innerHTML = message; // Use innerHTML to allow HTML tags in the message
-        area.classList.add(type === 'success' ? 'result-success' : 'result-fail');
+        messageElement.innerHTML = message;
+        area.classList.add(type === 'success' ? 'result-success' : (type === 'info' ? 'result-info' : 'result-fail'));
         area.style.display = 'block';
 
-        // Handle the note/button visibility specifically for resultArea1
         if (area.id === 'resultArea1') {
-             resultNoteContainer.style.display = showNote ? 'block' : 'none';
+            resultNoteContainer.style.display = showNote ? 'block' : 'none';
         }
     }
 
     function validateInputs() {
-        // Input validation logic (ensure required fields, numbers, odds > 1, etc.)
         const inputs = [
             { el: app1NameInput, name: 'एप १ को नाम' }, { el: app1Team1NameInput, name: 'एप १, टिम १ नाम' },
-            { el: app1Team1OddsInput, name: 'एप १, टिम १ ओड्स', isNumber: true, minValue: 1.00001 }, // Min value slightly > 1
+            { el: app1Team1OddsInput, name: 'एप १, टिम १ ओड्स', isNumber: true, minValue: 1.00001 },
             { el: app1Team2NameInput, name: 'एप १, टिम २ नाम' },
             { el: app1Team2OddsInput, name: 'एप १, टिम २ ओड्स', isNumber: true, minValue: 1.00001 },
             { el: app2NameInput, name: 'एप २ को नाम' },
@@ -113,47 +103,40 @@ document.addEventListener('DOMContentLoaded', () => {
             { el: app2Team2OddsInput, name: 'एप २, टिम २ ओड्स', isNumber: true, minValue: 1.00001 },
             { el: totalInvestmentInput, name: 'कुल लगानी', isNumber: true, minValue: 0.01 }
         ];
-
         for (const input of inputs) {
             const value = input.el.value.trim();
-            if (!value) {
-                return `कृपया '${input.name}' भर्नुहोस्।`;
-            }
+            if (!value) return `कृपया '${input.name}' भर्नुहोस्।`;
             if (input.isNumber) {
                 const numValue = parseFloat(value);
-                if (isNaN(numValue)) {
-                    return `'${input.name}' मा संख्यात्मक मान आवश्यक छ।`;
-                }
+                if (isNaN(numValue)) return `'${input.name}' मा संख्यात्मक मान आवश्यक छ।`;
                 if (input.minValue !== undefined && numValue < input.minValue) {
-                     // Use a more precise check for odds slightly greater than 1
-                     if (input.name.includes('ओड्स')) {
-                         return `'${input.name}' 1.0 भन्दा ठ्याक्कै बढी हुनुपर्छ।`;
-                     } else {
-                         return `'${input.name}' ${input.minValue} भन्दा बढी हुनुपर्छ।`;
-                     }
+                    if (input.name.includes('ओड्स')) return `'${input.name}' 1.0 भन्दा ठ्याक्कै बढी हुनुपर्छ।`;
+                    else return `'${input.name}' ${input.minValue} भन्दा बढी हुनुपर्छ।`;
                 }
             }
         }
-
         if (app1Team1NameInput.value.trim().toLowerCase() === app1Team2NameInput.value.trim().toLowerCase()) {
-             return "दुबै टिमको नाम एउटै हुन सक्दैन।";
+            return "दुबै टिमको नाम एउटै हुन सक्दैन।";
         }
-         if (!app1Team1NameInput.value.trim() || !app1Team2NameInput.value.trim()) {
-              return "कृपया दुबै टिमको नाम भर्नुहोस्।"; // Ensure synced names aren't blank
-         }
-
-
-        return null; // Validation passed
+        if (!app1Team1NameInput.value.trim() || !app1Team2NameInput.value.trim()) {
+            return "कृपया दुबै टिमको नाम भर्नुहोस्।";
+        }
+        return null;
     }
 
-
-    function handleCheckOpportunity() {
+    // This is the original calculation logic, now separated.
+    function performArbitrageCalculation() {
         // 1. Validate Inputs
         const validationError = validateInputs();
         if (validationError) {
             displayResult(resultArea1, validationError, 'fail');
-            return;
+            return; // Return here to prevent further execution and allow button state to be reset by wrapper
         }
+
+        // Update button text to "Calculating..." since validation passed
+        checkOpportunityBtn.textContent = 'गणना गर्दै...'; // Calculating...
+        displayResult(resultArea1, 'विवरण गणना गर्दै...', 'info', false); // Displaying calculation message
+
 
         // 2. Get Values & Store Initial State
         calculationState.app1.name = app1NameInput.value.trim();
@@ -163,24 +146,21 @@ document.addEventListener('DOMContentLoaded', () => {
         calculationState.app1.odd2 = parseFloat(app1Team2OddsInput.value);
 
         calculationState.app2.name = app2NameInput.value.trim();
-        calculationState.app2.team1 = app2Team1NameInput.value.trim(); // Synced
+        calculationState.app2.team1 = app2Team1NameInput.value.trim();
         calculationState.app2.odd1 = parseFloat(app2Team1OddsInput.value);
-        calculationState.app2.team2 = app2Team2NameInput.value.trim(); // Synced
+        calculationState.app2.team2 = app2Team2NameInput.value.trim();
         calculationState.app2.odd2 = parseFloat(app2Team2OddsInput.value);
 
         calculationState.totalInvestment = parseFloat(totalInvestmentInput.value);
 
-        // 3. Find Best Odds for Each Outcome (Team1 wins vs Team2 wins)
-        // Reset previous bests
+        // 3. Find Best Odds
         calculationState.bestOddTeam1 = 0;
         calculationState.bestOddTeam2 = 0;
         calculationState.appForTeam1 = '';
         calculationState.appForTeam2 = '';
-        calculationState.teamNameForOdd1 = calculationState.app1.team1; // Assign default team name
-        calculationState.teamNameForOdd2 = calculationState.app1.team2; // Assign default team name
+        calculationState.teamNameForOdd1 = calculationState.app1.team1;
+        calculationState.teamNameForOdd2 = calculationState.app1.team2;
 
-
-        // Best odd for Team 1 (using app1.team1 name) to win
         if (calculationState.app1.odd1 >= calculationState.app2.odd1) {
             calculationState.bestOddTeam1 = calculationState.app1.odd1;
             calculationState.appForTeam1 = 'app1';
@@ -188,8 +168,6 @@ document.addEventListener('DOMContentLoaded', () => {
             calculationState.bestOddTeam1 = calculationState.app2.odd1;
             calculationState.appForTeam1 = 'app2';
         }
-
-        // Best odd for Team 2 (using app1.team2 name) to win
         if (calculationState.app1.odd2 >= calculationState.app2.odd2) {
             calculationState.bestOddTeam2 = calculationState.app1.odd2;
             calculationState.appForTeam2 = 'app1';
@@ -198,43 +176,24 @@ document.addEventListener('DOMContentLoaded', () => {
             calculationState.appForTeam2 = 'app2';
         }
 
-        // Ensure we didn't accidentally pick the same app for both best odds if one app truly has better odds for both outcomes (no arbitrage)
-        // This check isn't strictly necessary if the margin calculation is correct, but added for clarity.
-        if (calculationState.appForTeam1 === calculationState.appForTeam2) {
-             // This scenario implies no arbitrage is possible between the two apps for these teams.
-             // The margin calculation below will handle this naturally.
-        }
-
-
         // 4. Check for Arbitrage Margin
         calculationState.margin = (1 / calculationState.bestOddTeam1) + (1 / calculationState.bestOddTeam2);
 
-        // Use a small tolerance for floating point comparison
-        if (calculationState.margin < 0.99999) { // Check if significantly less than 1
+        if (calculationState.margin < 0.99999) {
             calculationState.arbitrageFound = true;
-
-            // 5. Calculate IDEAL Stakes and Profit (for initial display)
             calculationState.stake1 = (calculationState.totalInvestment / calculationState.bestOddTeam1) / calculationState.margin;
             calculationState.stake2 = (calculationState.totalInvestment / calculationState.bestOddTeam2) / calculationState.margin;
-            // Profit = Guaranteed Return - Total Investment
-            // Guaranteed Return = stake1 * bestOddTeam1 (or stake2 * bestOddTeam2) which simplifies to totalInvestment / margin
             calculationState.profit = (calculationState.totalInvestment / calculationState.margin) - calculationState.totalInvestment;
 
-            // 6. Display Success Result
             const appName1 = calculationState.appForTeam1 === 'app1' ? calculationState.app1.name : calculationState.app2.name;
             const appName2 = calculationState.appForTeam2 === 'app1' ? calculationState.app1.name : calculationState.app2.name;
 
-             // Ensure appName1 and appName2 are different if arbitrage exists
-             if (appName1 === appName2) {
-                // This case should technically not happen if margin < 1, but as a fallback:
-                 calculationState.arbitrageFound = false;
-                 const message = `
-                     त्रुटि: दुबै उत्कृष्ट ओड्स एउटै एप ('${appName1}') मा भेटियो। यो अवस्थामा आर्बिट्रेज सम्भव छैन।
-                 `;
-                 displayResult(resultArea1, message, 'fail', false);
-                 return; // Exit the function
-             }
-
+            if (appName1 === appName2) {
+                calculationState.arbitrageFound = false;
+                const message = `त्रुटि: दुबै उत्कृष्ट ओड्स एउटै एप ('${appName1}') मा भेटियो। यो अवस्थामा आर्बिट्रेज सम्भव छैन।`;
+                displayResult(resultArea1, message, 'fail', false);
+                return; // Return here
+            }
 
             const message = `
                 <strong>बधाई छ! पैसा कमाउने सैद्धान्तिक मौका छ।</strong><br>
@@ -245,74 +204,99 @@ document.addEventListener('DOMContentLoaded', () => {
                 कुल लगानी: रु ${(calculationState.stake1 + calculationState.stake2).toFixed(2)}<br>
                 निश्चित न्यूनतम फाइदा: <strong>रु ${calculationState.profit.toFixed(2)}</strong>
             `;
-            displayResult(resultArea1, message, 'success', true); // Show the note and button
-
+            displayResult(resultArea1, message, 'success', true);
         } else {
-            // 7. Display Failure Result
             calculationState.arbitrageFound = false;
             const message = `
                 माफ गर्नुहोस्, हाल कुनै पैसा कमाउने मौका छैन।<br>
                 यसमा पैसा लगाउँदा तपाईंलाई घाटा जान सक्छ। (Margin: ${calculationState.margin.toFixed(5)})
             `;
-            displayResult(resultArea1, message, 'fail', false); // Hide the note and button
+            displayResult(resultArea1, message, 'fail', false);
         }
     }
+
+
+    // NEW: Wrapper function for session check and then calculation
+    async function wrappedHandleCheckOpportunity() {
+        checkOpportunityBtn.disabled = true;
+        checkOpportunityBtn.textContent = 'सत्र प्रमाणीकरण गर्दै...'; // Verifying session...
+        displayResult(resultArea1, 'तपाईंको सत्र प्रमाणीकरण गरिँदैछ, कृपया पर्खनुहोस्...', 'info', false); // Show info message
+
+        try {
+            console.log("Verifying session for b.html action...");
+            const response = await fetch('/api/verify-session', { // Assuming this endpoint exists from app.js context
+                method: 'GET',
+                headers: { 'Accept': 'application/json' }
+            });
+            const data = await response.json();
+
+            if (response.ok && data.loggedIn) {
+                console.log("Session verified for b.html. Proceeding to calculation.");
+                // User is logged in, proceed to actual calculation
+                // The performArbitrageCalculation function will handle further button text changes (e.g., "Calculating...")
+                // and its own result display.
+                performArbitrageCalculation();
+            } else {
+                // User not logged in or session invalid
+                console.log("Session invalid or user not logged in for b.html action.");
+                let errorMsg = 'यो सुविधा प्रयोग गर्न, तपाईं लगइन भएको हुनुपर्छ। ';
+                errorMsg += `कृपया <a href="index.html" style="color: #c0392b; text-decoration: underline;">गृहपृष्ठमा जानुहोस्</a> र लगइन गर्नुहोस्।`;
+                if (data && data.error) { // If backend provided a specific error
+                    errorMsg = `सत्र प्रमाणीकरण असफल: ${data.error}. ` + errorMsg;
+                }
+                displayResult(resultArea1, errorMsg, 'fail', false);
+            }
+        } catch (error) {
+            console.error('Network error during session verification for b.html:', error);
+            displayResult(resultArea1, 'सत्र प्रमाणीकरण गर्दा नेटवर्कमा समस्या आयो। कृपया आफ्नो इन्टरनेट जडान जाँच गर्नुहोस् र फेरि प्रयास गर्नुहोस्।', 'fail', false);
+        } finally {
+            // Re-enable button ONLY if the process didn't naturally lead to calculation
+            // If performArbitrageCalculation was called, it might still be "Calculating..."
+            // This ensures if session check fails, button is reset.
+            // If performArbitrageCalculation runs, it will reset the button itself upon completion or its own error.
+            if (checkOpportunityBtn.textContent === 'सत्र प्रमाणीकरण गर्दै...') {
+                 checkOpportunityBtn.disabled = false;
+                 checkOpportunityBtn.textContent = 'कमाउन मिल्छ कि नाइँ चेक गर्नुहोस्';
+            }
+        }
+    }
+
 
     function openModal() {
         if (!calculationState.arbitrageFound) {
-             alert("कृपया पहिले कमाउने मौका छ कि छैन जाँच गर्नुहोस्।");
-             return;
+            alert("कृपया पहिले कमाउने मौका छ कि छैन जाँच गर्नुहोस् र सफल नतिजा आएको हुनुपर्छ।");
+            return;
         }
-        // Populate modal app names using the state
         modalApp1NameSpan.textContent = calculationState.app1.name || 'एप १';
         modalApp2NameSpan.textContent = calculationState.app2.name || 'एप २';
-
-        // Set the value attribute for radio buttons if needed for logic later
-        prefApp1Radio.value = calculationState.app1.name; // Store actual app name
-        prefApp2Radio.value = calculationState.app2.name; // Store actual app name
-
-
-        // Clear previous selections/inputs in modal
+        prefApp1Radio.value = calculationState.app1.name;
+        prefApp2Radio.value = calculationState.app2.name;
         prefApp1Radio.checked = false;
         prefApp2Radio.checked = false;
         usualBetAmountInput.value = '';
-
-        // Show modal
         algorithmModal.style.display = 'block';
-        // Hide previous results when modal opens
         resultArea2.style.display = 'none';
     }
 
-     function closeModal() {
-         algorithmModal.style.display = 'none';
-     }
+    function closeModal() {
+        algorithmModal.style.display = 'none';
+    }
 
-    // Function to round stake: neglect decimal, change last digit to 0 or 5
     function roundStakeAntiAlgo(amount) {
         if (amount <= 0) return 0;
         const floorAmount = Math.floor(amount);
         const lastDigit = floorAmount % 10;
         let roundedAmount;
-
-        // Round to nearest 0 or 5
-        if (lastDigit < 3) { // 0, 1, 2 -> round down to 0
-            roundedAmount = floorAmount - lastDigit;
-        } else if (lastDigit < 8) { // 3, 4, 5, 6, 7 -> round up to 5
-            roundedAmount = floorAmount - lastDigit + 5;
-        } else { // 8, 9 -> round up to next 10
-            roundedAmount = floorAmount - lastDigit + 10;
-        }
-        // Ensure it doesn't round down to negative zero if input is small (e.g., 2)
+        if (lastDigit < 3) roundedAmount = floorAmount - lastDigit;
+        else if (lastDigit < 8) roundedAmount = floorAmount - lastDigit + 5;
+        else roundedAmount = floorAmount - lastDigit + 10;
         return Math.max(0, roundedAmount);
     }
 
-
     function handleCalculateSafeBet() {
-        // 1. Get Modal Inputs
         const preferredAppRadio = document.querySelector('input[name="preferredApp"]:checked');
         const usualBetStr = usualBetAmountInput.value.trim();
 
-        // 2. Validate Modal Inputs
         if (!preferredAppRadio) {
             alert("कृपया हजुरलाई मन पर्ने एप छान्नुहोस्।");
             return;
@@ -322,102 +306,70 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const preferredAppNameSelected = preferredAppRadio.value; // Actual name of the app selected
-        const S_preferred = parseFloat(usualBetStr); // User's preferred stake amount
+        const preferredAppNameSelected = preferredAppRadio.value;
+        const S_preferred = parseFloat(usualBetStr);
 
-        // 3. Identify Preferred and Other App details from stored state
         let prefOdd, otherOdd, prefTeamName, otherTeamName, prefAppNameActual, otherAppNameActual;
-
-        // Determine which *original best odd* corresponds to the preferred app selection
-        // And assign the corresponding app/team names and odds correctly.
-
         const app1IsPref = preferredAppNameSelected === calculationState.app1.name;
         const app2IsPref = preferredAppNameSelected === calculationState.app2.name;
 
-        // Find which stored "best odd" belongs to the preferred app
+        // Determine which app/team combination the user's "preferred app" selection aligns with
+        // from the previously found best odds.
+
+        // Scenario 1: The preferred app holds the best odd for Team 1
         if ((app1IsPref && calculationState.appForTeam1 === 'app1') || (app2IsPref && calculationState.appForTeam1 === 'app2')) {
-            // User preferred the app that had the best odd for Team 1
             prefOdd = calculationState.bestOddTeam1;
             prefTeamName = calculationState.teamNameForOdd1;
-            prefAppNameActual = preferredAppNameSelected;
+            prefAppNameActual = preferredAppNameSelected; // Name of the app user actually selected in modal
 
             otherOdd = calculationState.bestOddTeam2;
             otherTeamName = calculationState.teamNameForOdd2;
-            otherAppNameActual = app1IsPref ? calculationState.app2.name : calculationState.app1.name; // The *other* app's name
+            // Determine the *actual name* of the "other" app from the initial setup
+            otherAppNameActual = (calculationState.appForTeam2 === 'app1') ? calculationState.app1.name : calculationState.app2.name;
 
+        // Scenario 2: The preferred app holds the best odd for Team 2
         } else if ((app1IsPref && calculationState.appForTeam2 === 'app1') || (app2IsPref && calculationState.appForTeam2 === 'app2')) {
-            // User preferred the app that had the best odd for Team 2
-             prefOdd = calculationState.bestOddTeam2;
-             prefTeamName = calculationState.teamNameForOdd2;
-             prefAppNameActual = preferredAppNameSelected;
+            prefOdd = calculationState.bestOddTeam2;
+            prefTeamName = calculationState.teamNameForOdd2;
+            prefAppNameActual = preferredAppNameSelected;
 
-             otherOdd = calculationState.bestOddTeam1;
-             otherTeamName = calculationState.teamNameForOdd1;
-             otherAppNameActual = app1IsPref ? calculationState.app2.name : calculationState.app1.name; // The *other* app's name
+            otherOdd = calculationState.bestOddTeam1;
+            otherTeamName = calculationState.teamNameForOdd1;
+            otherAppNameActual = (calculationState.appForTeam1 === 'app1') ? calculationState.app1.name : calculationState.app2.name;
         } else {
-            // Error case - should not happen if arbitrage was found and apps are distinct
-             alert("त्रुटि: प्राथमिकता एप र उत्कृष्ट ओड्स मिलाउन सकिएन।");
+             alert("त्रुटि: प्राथमिकता एप र उत्कृष्ट ओड्स मिलाउन सकिएन। यस्तो हुन सक्छ यदि तपाईंले रोज्नुभएको एपमा कुनै पनि उत्कृष्ट ओड थिएन।");
              console.error("Error matching preferred app with best odds assignments:", calculationState, preferredAppNameSelected);
              return;
         }
 
-
-        // 4. Calculate the theoretical stake for the *other* app based on S_preferred
-        // To get equal return: S_preferred * prefOdd = O_calculated * otherOdd
-        // Avoid division by zero if otherOdd is somehow invalid (shouldn't happen if validation passed)
-        if (otherOdd <= 1) {
+        if (otherOdd <= 1) { // Should have been caught by input validation, but good to double check
             alert("त्रुटि: अर्को एपको ओड्स (Odds) अमान्य छ।");
-            console.error("Invalid otherOdd:", otherOdd);
             return;
         }
         const O_calculated = (S_preferred * prefOdd) / otherOdd;
-
-        // 5. Round O_calculated according to the anti-algo rule
         const O_rounded = roundStakeAntiAlgo(O_calculated);
 
-
-        // 6. Test 9 Stake Variations around S_preferred and O_rounded
         const variations = [
             { s_adj: 0, o_adj: 0 }, { s_adj: 0, o_adj: -5 }, { s_adj: 0, o_adj: 5 },
             { s_adj: -10, o_adj: 0 }, { s_adj: -10, o_adj: -5 }, { s_adj: -10, o_adj: 5 },
             { s_adj: 10, o_adj: 0 }, { s_adj: 10, o_adj: -5 }, { s_adj: 10, o_adj: 5 }
         ];
-
-        let bestProfit = -Infinity; // Initialize with a very small number
-        let bestStakeS = 0;
-        let bestStakeO = 0;
-        let bestTotalStake = 0;
+        let bestProfit = -Infinity;
+        let bestStakeS = 0, bestStakeO = 0, bestTotalStake = 0;
         let bestVariationFound = false;
-
-        // console.log("--- Starting Variation Test ---");
-        // console.log(`S_preferred: ${S_preferred}, O_calculated: ${O_calculated}, O_rounded: ${O_rounded}`);
-        // console.log(`Pref Odd: ${prefOdd}, Other Odd: ${otherOdd}`);
 
         for (const v of variations) {
             const currentS = S_preferred + v.s_adj;
             const currentO = O_rounded + v.o_adj;
-
-            // Ensure stakes are positive numbers
-            if (currentS <= 0 || currentO <= 0) {
-                // console.log(`Skipping variation S=${currentS}, O=${currentO} (non-positive stake)`);
-                continue;
-            }
+            if (currentS <= 0 || currentO <= 0) continue;
 
             const totalStake = currentS + currentO;
             const returnIfPrefWins = currentS * prefOdd;
             const returnIfOtherWins = currentO * otherOdd;
-
-            // *** CRITICAL CALCULATION FOR MINIMUM PROFIT ***
             const minReturn = Math.min(returnIfPrefWins, returnIfOtherWins);
             const profit = minReturn - totalStake;
-            // *** END CRITICAL CALCULATION ***
 
-            // console.log(`Testing S=${currentS.toFixed(2)}, O=${currentO.toFixed(2)} | RetPref: ${returnIfPrefWins.toFixed(2)}, RetOther: ${returnIfOtherWins.toFixed(2)} | MinRet: ${minReturn.toFixed(2)} | TotalStake: ${totalStake.toFixed(2)} | Profit: ${profit.toFixed(2)}`);
-
-            // Track the combination with the highest minimum profit
-            // Use a small tolerance for comparing floating point profits
             if (profit > bestProfit + 0.00001) {
-                // console.log(`   New best profit found: ${profit.toFixed(2)} (Old: ${bestProfit === -Infinity ? '-Inf' : bestProfit.toFixed(2)})`);
                 bestProfit = profit;
                 bestStakeS = currentS;
                 bestStakeO = currentO;
@@ -425,34 +377,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 bestVariationFound = true;
             }
         }
-        // console.log("--- Variation Test Complete ---");
-        // console.log(`Selected: S=${bestStakeS.toFixed(2)}, O=${bestStakeO.toFixed(2)}, Profit=${bestProfit.toFixed(2)}`);
 
-
-        // 7. Display Final Result in resultArea2
-        if (bestVariationFound && bestProfit >= 0) { // Only show if a profitable variation was found
-             const finalMessage = `
+        if (bestVariationFound && bestProfit >= 0) {
+            const finalMessage = `
                 <h3>अल्गोरिदमबाट बचेर पैसा लाउने तरिका:</h3>
                 <p><strong>'${prefAppNameActual}'</strong> को <strong>'${prefTeamName}'</strong> मा: <strong>रु ${bestStakeS.toFixed(2)}</strong> लगाउनुहोस्।</p>
                 <p><strong>'${otherAppNameActual}'</strong> को <strong>'${otherTeamName}'</strong> मा: <strong>रु ${bestStakeO.toFixed(2)}</strong> लगाउनुहोस्।</p>
                 <hr style="margin: 10px 0;">
                 <p>हजुरको कुल लगानी: <strong>रु ${bestTotalStake.toFixed(2)}</strong></p>
                 <p>हजुरको न्यूनतम फाइदा: <strong>रु ${bestProfit.toFixed(2)}</strong></p>
-             `;
-             // Use resultArea2 directly for the message content
-             displayResult(resultArea2, finalMessage, 'success');
+            `;
+            displayResult(resultArea2, finalMessage, 'success');
         } else {
-             const finalMessage = `
+            const finalMessage = `
                 <h3>नतिजा</h3>
                 माफ गर्नुहोस्, तपाईंले दिनुभएको 'प्रायः लगाउने पैसा' (रु ${S_preferred.toFixed(2)}) को आधारमा, अल्गोरिदमबाट बच्दै फाइदाजनक हुने कुनै लगानी समायोजन फेला परेन। <br>
                 (${bestVariationFound ? 'सबैभन्दा राम्रो प्रयासले रु ' + bestProfit.toFixed(2) + ' घाटा दियो।' : 'कुनै मान्य समायोजन भेटिएन।'}) <br><br>
                 तपाईंले फरक रकम प्रयास गर्न सक्नुहुन्छ वा सुरुको सैद्धान्तिक सिफारिस अनुसार लगानी गर्न सक्नुहुन्छ (तर जोखिम ख्याल राख्नुहोला)।
-             `;
-             // Use resultArea2 directly for the message content
-             displayResult(resultArea2, finalMessage, 'fail');
+            `;
+            displayResult(resultArea2, finalMessage, 'fail');
         }
-
-        // 8. Close Modal after calculation
         closeModal();
     }
 
