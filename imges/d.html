@@ -1,0 +1,349 @@
+
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>आर्बिट्रेज बेटिङ डेमो</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5; /* Light background for the page */
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 15px;
+            background-color: #ffffff; /* White background for content */
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: #fff;
+        }
+
+        h2, h3, h4 {
+            color: #0056b3; /* Professional blue for headers */
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .description-box h2 {
+            color: #28a745; /* Green for this specific header */
+        }
+
+        .description-box p {
+            margin-bottom: 10px;
+            font-size: 0.95em;
+        }
+
+        .example-box h3 {
+             color: #dc3545; /* Reddish tone for example header */
+        }
+        
+        .betting-app-section {
+            margin-bottom: 25px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background-color: #f9f9f9;
+        }
+
+        .betting-app-section h4 {
+            color: #17a2b8; /* Teal for app names */
+            margin-top: 0;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .odds-image {
+            display: block;
+            max-width: 150px; /* Adjust as needed */
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            object-fit: contain; /* Or cover, depending on image content */
+            margin: 0 auto 15px auto;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #e9ecef; /* Placeholder background */
+        }
+
+        .odds-input-group {
+            margin-bottom: 18px;
+        }
+
+        .odds-input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .odds-input-group input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            font-size: 1em; /* Larger font for input text */
+            box-sizing: border-box;
+            -moz-appearance: textfield; /* Hides arrows in Firefox */
+        }
+        .odds-input-group input[type="number"]::-webkit-outer-spin-button,
+        .odds-input-group input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none; /* Hides arrows in Chrome, Safari, Edge, Opera */
+            margin: 0;
+        }
+
+
+        .investment-amount-section label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            font-size: 1em;
+            color: #333;
+            text-align: center;
+        }
+        .investment-amount-section input[type="number"] {
+             width: 60%;
+             margin: 0 auto;
+             display: block;
+             text-align: center;
+        }
+
+
+        #submit-button {
+            display: block;
+            width: 50%;
+            padding: 12px 20px;
+            background-color: #28a745; /* Vibrant green */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin: 20px auto 0 auto;
+            transition: background-color 0.3s ease;
+        }
+
+        #submit-button:hover {
+            background-color: #218838; /* Darker green on hover */
+        }
+
+        .error-message {
+            display: block; /* Will be shown by JS */
+            color: #dc3545; /* Red for errors */
+            font-size: 0.85em;
+            margin-top: 5px;
+        }
+        
+        .global-error-message {
+            text-align: center;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .result-box {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e6f7ff; /* Light blue for results */
+            border: 1px solid #91d5ff;
+            border-radius: 5px;
+        }
+        
+        .result-box p {
+            font-size: 1.05em;
+            margin-bottom: 10px;
+        }
+
+        .warning-message {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #fff3cd; /* Light yellow for warning */
+            border: 1px solid #ffeeba;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        .warning-message p {
+            margin:0;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #343a40; /* Dark footer */
+            color: #f8f9fa;
+            border-radius: 0 0 8px 8px;
+        }
+
+        footer p {
+            margin: 5px 0;
+            font-size: 0.9em;
+        }
+        
+        footer .motto {
+            font-weight: bold;
+            color: #ffc107; /* Yellow for motto */
+            font-size: 1em;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+                padding: 10px;
+            }
+            section {
+                padding: 15px;
+            }
+            h2 {
+                font-size: 1.5em;
+            }
+            h3 {
+                font-size: 1.3em;
+            }
+            h4 {
+                font-size: 1.1em;
+            }
+            #submit-button {
+                width: 100%;
+            }
+            .odds-input-group input[type="number"],
+            .investment-amount-section input[type="number"] {
+                 width: 100%; /* Full width inputs on mobile */
+            }
+        }
+        
+        /* For side-by-side label and input on larger screens, if desired */
+        /* @media (min-width: 768px) {
+            .odds-input-group {
+                display: flex;
+                align-items: center;
+            }
+            .odds-input-group label {
+                flex-basis: 50%; 
+                margin-bottom: 0;
+                margin-right: 10px;
+            }
+            .odds-input-group input[type="number"] {
+                flex-basis: 50%;
+                width: auto;
+            }
+        } */
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Description Box -->
+        <section class="description-box">
+            <h2>वेबसाइट चलाउने तरिका</h2>
+            <p>क. गृह पृष्ठमा रहेको "पैसा कमाउन सुरु गर्नुहोस्" मा थिच्नुहोस्।</p>
+            <p>ख. दुईवटा वेबसाइटमा रहेको भिन्न भिन्न ओड्स (odds) यहाँ हाल्नुहोस्।</p>
+            <p>ग. हाम्रो एपले कति पैसा लगाउँदा एक रुपैयाँ घाटा लाग्दैन भन्ने र आम्दानी गर्न सकिन्छ भनेर बताउँछ। त्यसरी लगानी गर्नुहोस् अनि ढुक्क भएर पैसा कमाउनुहोस्।</p>
+        </section>
+
+        <!-- Example Box -->
+        <section class="example-box">
+            <h3>तलको उदाहरणमा आफै प्रयास गर्नुहोस् र बुझ्नुहोस्।</h3>
+
+            <!-- Sub Box 2.a (1xbet) -->
+            <div class="betting-app-section">
+                <h4>एप: 1xbet</h4>
+                <img src="images/IMG_20250503_211834.jpg" alt="1xbet ओड्सको उदाहरण भएको चित्र" class="odds-image">
+                
+                <div class="odds-input-group">
+                    <label for="1xbet-lucknow-odds">यो एप (1x bet) मा लखनऊको ओड्स कति छ, लेख्नुहोस्:</label>
+                    <input type="number" step="any" id="1xbet-lucknow-odds" data-expected="2.12" placeholder="ओड्स (odds) यहाँ लेख्नुहोस्">
+                    <span class="error-message" id="error-1xbet-lucknow-odds"></span>
+                </div>
+                <div class="odds-input-group">
+                    <label for="1xbet-punjab-odds">यो एप (1x bet) मा पञ्जाबको ओड्स कति छ, लेख्नुहोस्:</label>
+                    <input type="number" step="any" id="1xbet-punjab-odds" data-expected="1.749" placeholder="ओड्स (odds) यहाँ लेख्नुहोस्">
+                    <span class="error-message" id="error-1xbet-punjab-odds"></span>
+                </div>
+            </div>
+
+            <!-- Sub Box 2.b (BC.com) -->
+            <div class="betting-app-section">
+                <h4>एप: BC.game</h4>
+                <img src="images/IMG_20250503_211756.jpg" alt="BC.game ओड्सको उदाहरण भएको चित्र" class="odds-image">
+                
+                <div class="odds-input-group">
+                    <label for="bcgame-lucknow-odds">यो एप (BC.game) मा लखनऊको ओड्स कति छ, लेख्नुहोस्:</label>
+                    <input type="number" step="any" id="bcgame-lucknow-odds" data-expected="1.86" placeholder="ओड्स (odds) यहाँ लेख्नुहोस्">
+                    <span class="error-message" id="error-bcgame-lucknow-odds"></span>
+                </div>
+                <div class="odds-input-group">
+                    <label for="bcgame-punjab-odds">यो एप (BC.game) मा पञ्जाबको ओड्स कति छ, लेख्नुहोस्:</label>
+                    <input type="number" step="any" id="bcgame-punjab-odds" data-expected="2.08" placeholder="ओड्स (odds) यहाँ लेख्नुहोस्">
+                    <span class="error-message" id="error-bcgame-punjab-odds"></span>
+                </div>
+            </div>
+
+            <!-- Sub Box 2.c (Investment Amount) -->
+            <div class="investment-amount-section">
+                <label for="total-amount">हजुरले कति रुपैयाँ लाउनुहुन्छ?</label>
+                <input type="number" step="any" id="total-amount" placeholder="हजुरको पैसा" max="9999999">
+                <span class="error-message" id="error-total-amount"></span>
+            </div>
+
+            <button id="submit-button">बुझाउनुहोस्</button>
+            <span class="error-message global-error-message" id="global-error-message"></span>
+        </section>
+
+        <!-- Result Box (Initially Hidden) -->
+        <section class="result-box" id="result-box" style="display: none;">
+            <p id="result-message-text">हजुरले यो एपमा यति रुपैयाँ लगाई र यो एपमा यति रुपैयाँ लगाए हजुरलाई यति रुपैयाँ फाइदा हुनेछ।</p>
+            <div class="warning-message">
+                <p>ख्याल गर्नुहोस्, यसरी दशमलव (decimal) मा पैसा लगाउँदा algorithm ले हजुरलाई कालो सूचीमा राख्न सक्छ। algorithm सँग बचेर पैसा लगाउने हो भने "पैसा कमाउन सुरु गर्नुहोस्" मा थिच्नुहोस्। त्यहाँ हाम्रो smart प्रणालीबाट बचेर कति पैसा लगाउँदा फाइदा हुन्छ भन्ने कुरा देखाउँछौं। त्यसको लागि हजुरले निःशुल्क साइनअपमा गएर आफ्नो खाता खोल्न सक्नुहुनेछ। धन्यवाद।</p>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <p>थप जानकारीको लागि ९८६६१५५२२४ मा अथवा हाम्रो ईमेल: nebassist@gmail.com मा सम्पर्क गर्न सक्नुहुनेछ।</p>
+            <p class="motto">बेटिङमा सधैं हजुरको साथी</p>
+        </footer>
+    </div>
+
+    <script src="d.js"></script>
+    <!-- 
+        Note for d.js:
+        - Get values from:
+            - #1xbet-lucknow-odds (expected: 2.12)
+            - #1xbet-punjab-odds (expected: 1.749)
+            - #bcgame-lucknow-odds (expected: 1.86)
+            - #bcgame-punjab-odds (expected: 2.08)
+            - #total-amount (max 9999999, must be positive)
+        - On submit:
+            - Clear previous errors.
+            - Validate odds:
+                - If any odd is different from its data-expected value:
+                    - Display "यो उदाहरणको लागि हो, चाहेको अंक हाल्न लगइन गर्नुहोस्।" in #global-error-message.
+                    - Display "चित्रमा लेखेको अंक मात्र मान्य हुनेछ।" in the corresponding #error-[id] span.
+                    - Return, do not proceed.
+            - Validate total-amount:
+                - If empty, not a number, <= 0, or > 9999999:
+                    - Display error in #error-total-amount (e.g., "कृपया मान्य रकम हाल्नुहोस् (७ अंकभन्दा कम)।").
+                    - Return, do not proceed.
+            - If all valid:
+                - Perform calculation (logic to be defined in d.js).
+                - Update #result-message-text with the dynamic message.
+                - Show #result-box (e.g., document.getElementById('result-box').style.display = 'block';).
+    -->
+</body>
+</html>
