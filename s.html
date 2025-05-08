@@ -149,8 +149,7 @@
             border-right: 8px solid #e74c3c; /* Pointing right */
         }
         /* For checkbox, error appears below */
-        .checkbox-group .error-message.visible::before {
-             /* Standard error message style applies, appears below checkbox group */
+        .checkbox-group + .error-message.visible::before { /* Target error message directly after checkbox-group */
             top: -8px; /* Pointing upwards to the checkbox area */
             left: 10px;
             border-left: 6px solid transparent;
@@ -227,6 +226,7 @@
             transform: translateY(-2px);
         }
     </style>
+
 </head>
 <body>
     <div class="form-container">
@@ -281,7 +281,7 @@
         const form = document.getElementById('customForm');
         const statusMessageDiv = document.getElementById('statusMessage');
         const thankYouSectionDiv = document.getElementById('thankYouSection');
-        const formContainer = document.querySelector('.form-container form'); // Select the form element itself
+        const formElement = document.querySelector('#customForm'); // Changed variable name to avoid conflict with form const
 
         // IMPORTANT: Replace with YOUR Google Apps Script Web App URL
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx1mXpaaMN_hRbS-vZOvFxxOECdbWxP-wkHY4ENFOwJ6kRkhlJKjzcPXpW8FCHIeIkY/exec';
@@ -295,9 +295,13 @@
             }
             if (inputField && inputField.type !== 'checkbox') { // Don't border the checkbox itself
                 inputField.style.borderColor = '#e74c3c';
-                inputField.parentElement.style.boxShadow = '0 0 0 2px rgba(231, 76, 60, 0.2)'; // Highlight wrapper
+                // Highlight wrapper if input-wrapper exists
+                if(inputField.parentElement.classList.contains('input-wrapper')){
+                    inputField.parentElement.style.boxShadow = '0 0 0 2px rgba(231, 76, 60, 0.2)';
+                } else { // For inputs not in input-wrapper (though all yours are)
+                     inputField.style.boxShadow = '0 0 0 2px rgba(231, 76, 60, 0.2)';
+                }
             } else if (inputField && inputField.type === 'checkbox') {
-                 // Optionally style the checkbox label or container
                 const checkboxLabel = document.querySelector(`label[for='${fieldId}']`);
                 if(checkboxLabel) checkboxLabel.style.color = '#e74c3c';
             }
@@ -310,7 +314,11 @@
             });
             form.querySelectorAll('input[type="text"], input[type="email"], input[type="password"]').forEach(input => {
                 input.style.borderColor = '#ccc';
-                input.parentElement.style.boxShadow = 'none';
+                if(input.parentElement.classList.contains('input-wrapper')){
+                    input.parentElement.style.boxShadow = 'none';
+                } else {
+                     input.style.boxShadow = 'none';
+                }
             });
             const consentLabel = document.querySelector("label[for='consent']");
             if(consentLabel) consentLabel.style.color = '#555'; // Reset color
@@ -324,9 +332,9 @@
             let isValid = true;
 
             const firstName = document.getElementById('firstName').value.trim();
-            const emailVal = document.getElementById('email').value.trim(); // Renamed to avoid conflict
-            const passwordVal = document.getElementById('password').value; // Renamed
-            const consentChecked = document.getElementById('consent').checked; // Renamed
+            const emailVal = document.getElementById('email').value.trim();
+            const passwordVal = document.getElementById('password').value;
+            const consentChecked = document.getElementById('consent').checked;
 
             if (!firstName) {
                 displayError('firstName', 'कृपया आफ्नो पहिलो नाम भर्नुहोस्।');
@@ -354,26 +362,22 @@
             if (!isValid) {
                 statusMessageDiv.textContent = 'कृपया सबै आवश्यक फिल्डहरू सही तरिकाले भर्नुहोस्।';
                 statusMessageDiv.style.color = '#e74c3c';
-                // Focus the first invalid field
                 const firstError = document.querySelector('.error-message.visible');
                 if (firstError) {
                     const fieldId = firstError.id.replace('Error', '');
-                    document.getElementById(fieldId)?.focus();
+                    const fieldToFocus = document.getElementById(fieldId);
+                    if (fieldToFocus) fieldToFocus.focus();
                 }
                 return;
             }
 
             statusMessageDiv.textContent = 'पेश गर्दै...'; // Submitting...
-            statusMessageDiv.style.color = '#FF758C'; // Use a theme color
+            statusMessageDiv.style.color = '#FF758C';
 
             const formData = new FormData(form);
-            // FormData directly uses the 'name' attribute from HTML inputs.
-            // 'consent' will be 'yes' if checked (due to value="yes"), or not present if unchecked.
-            // Let's ensure it's always present for the script.
             if (!formData.has('consent')) {
-                formData.append('consent', 'no'); // Or false
+                formData.append('consent', 'no');
             }
-
 
             try {
                 const response = await fetch(SCRIPT_URL, {
@@ -382,20 +386,27 @@
                 });
                 const result = await response.json();
 
-                if (result.result === "success") {
-                    formContainer.style.display = 'none'; // Hide form
+                // --- MODIFIED SUCCESS CONDITION ---
+                const successMessageFromScript = "Data received and saved"; // The message your script sends on success
+                const isActualSuccess = result.result === "success" ||
+                                       (result.message && typeof result.message === 'string' && result.message.includes(successMessageFromScript)) ||
+                                       (result.result && typeof result.result === 'string' && result.result.includes(successMessageFromScript));
+
+                if (isActualSuccess) {
+                    formElement.style.display = 'none'; // Hide form
                     statusMessageDiv.style.display = 'none';
                     thankYouSectionDiv.innerHTML = `
                         <h2>धन्यवाद!</h2>
                         <p>फारम भर्नु भएकोमा धन्यवाद। हामी तपाईंलाई सकेसम्म चाँडो सम्पर्क गर्नेछौं।</p>
-                        <a href="index.html" class="back-button">गृह पृष्ठमा फर्कनुहोस्</a>
-                    `; // Thank you... // Go back to Home Page
+                        <a href="#" onclick="location.reload(); return false;" class="back-button">अर्को प्रतिक्रिया भर्नुहोस्</a>
+                    `; // Thank you... // Fill another response (or use index.html if you have one)
                     thankYouSectionDiv.style.display = 'block';
                 } else {
-                    statusMessageDiv.textContent = `त्रुटि: ${result.message || 'पेश गर्न सकिएन।'}`;
+                    statusMessageDiv.textContent = `त्रुटि: ${result.message || result.result || 'पेश गर्न सकिएन।'}`;
                     statusMessageDiv.style.color = '#e74c3c';
                 }
             } catch (error) {
+                console.error("Fetch error:", error); // Log the actual error for debugging
                 statusMessageDiv.textContent = `नेटवर्क त्रुटि: ${error.message || 'सर्भरमा जडान हुन सकेन।'}`;
                 statusMessageDiv.style.color = '#e74c3c';
             }
