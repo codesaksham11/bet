@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>बेटिङ सहयोगी - स्मार्ट बेटिङबाट नाफा कमाउनुहोस्</title>
+    <title>बेटिङ सहयोगी - स्मार्ट बेटिङ, सूचित निर्णय</title>
     <!-- Favicon -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📈</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧮</text></svg>">
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,19 +14,18 @@
     <style>
         /* --- Global Styles & Resets --- */
         :root {
-            --primary-color: #1a2a6c; /* Deep Blue */
-            --secondary-color: #b21f1f; /* Dark Red */
-            --accent-color: #fdbb2d; /* Gold/Yellow */
-            --text-color: #333;
-            --light-text-color: #f8f9fa;
-            --background-color: #f8f9fa; /* Light Gray */
+            --primary-color: #2c5282; /* Softer blue for trust */
+            --secondary-color: #4a5568; /* Neutral gray */
+            --accent-color: #48bb78; /* Green for success */
+            --text-color: #2d3748; /* Dark, readable text */
+            --light-text-color: #ffffff;
+            --background-color: #f7fafc; /* Clean, light background */
             --card-background: #ffffff;
-            --border-color: #dee2e6;
-            --success-color: #28a745;
-            --error-color: #dc3545;
-            --hover-darken-factor: 0.9;
-            --border-radius: 8px;
-            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --border-color: #e2e8f0;
+            --success-color: #38a169;
+            --error-color: #e53e3e;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             --font-family: 'Noto Sans Devanagari', sans-serif;
         }
 
@@ -44,49 +43,50 @@
             font-family: var(--font-family);
             background-color: var(--background-color);
             color: var(--text-color);
-            line-height: 1.7;
-            font-size: 16px; /* Base font size */
+            line-height: 1.8;
+            font-size: 1rem;
         }
 
         .container {
-            max-width: 1100px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 24px;
         }
 
         h1, h2, h3 {
             color: var(--primary-color);
             margin-bottom: 1rem;
-            font-weight: 700;
+            font-weight: 600;
         }
 
         h1 {
-            font-size: 2.5rem; /* Larger for impact */
+            font-size: 2.8rem;
             line-height: 1.3;
         }
 
         h2 {
-            font-size: 2rem;
+            font-size: 2.2rem;
             text-align: center;
-            margin-bottom: 2.5rem; /* More space before sections */
+            margin-bottom: 2rem;
         }
 
         p {
             margin-bottom: 1rem;
-            color: #555; /* Slightly lighter text for paragraphs */
+            color: var(--text-color);
+            font-size: 1.1rem;
         }
 
         a {
             text-decoration: none;
-            color: var(--secondary-color);
+            color: var(--primary-color);
             transition: color 0.3s ease;
         }
 
         a:hover {
-            color: color-mix(in srgb, var(--secondary-color), black 20%);
+            color: color-mix(in srgb, var(--primary-color), black 20%);
         }
 
-        img {
+        img, iframe {
             max-width: 100%;
             height: auto;
             display: block;
@@ -94,10 +94,10 @@
 
         /* --- Header --- */
         header {
-            background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            background: var(--primary-color);
             color: var(--light-text-color);
-            padding: 1rem 0;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             position: sticky;
             top: 0;
             z-index: 1000;
@@ -110,20 +110,22 @@
         }
 
         .logo {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             font-weight: 700;
+            display: flex;
+            align-items: center;
             color: var(--light-text-color);
         }
 
         .logo .icon {
-            margin-right: 8px;
-            vertical-align: middle; /* Align icon nicely */
+            font-size: 1.8rem;
+            margin-right: 10px;
         }
 
         .user-actions {
             display: flex;
             align-items: center;
-            gap: 15px; /* Space between buttons/user info */
+            gap: 15px;
         }
 
         #user-info {
@@ -139,128 +141,126 @@
 
         /* --- Buttons --- */
         .button {
-            display: inline-flex; /* Align icon and text */
+            display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            padding: 10px 20px;
+            padding: 12px 24px;
             border: none;
             border-radius: var(--border-radius);
             font-family: var(--font-family);
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.1s ease;
             text-align: center;
-            white-space: nowrap; /* Prevent button text wrapping */
-        }
-
-        .button .icon {
-            font-size: 1.1em; /* Slightly larger icons */
+            min-height: 48px;
         }
 
         .button-primary {
             background-color: var(--accent-color);
-            color: var(--primary-color);
+            color: var(--light-text-color);
         }
 
         .button-primary:hover {
-            background-color: color-mix(in srgb, var(--accent-color), black 10%);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-            transform: translateY(-2px);
+            background-color: color-mix(in srgb, var(--accent-color), black 15%);
+            transform: translateY(-1px);
         }
 
         .button-secondary {
             background-color: transparent;
-            color: var(--light-text-color);
-            border: 2px solid var(--light-text-color);
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
         }
 
         .button-secondary:hover {
+            background-color: var(--primary-color);
+            color: var(--light-text-color);
+        }
+
+        .auth-button {
+            padding: 8px 16px;
+            font-size: 0.95rem;
+        }
+
+        .auth-button.login {
+            background-color: var(--accent-color);
+            color: var(--light-text-color);
+        }
+
+        .auth-button.login:hover {
+            background-color: color-mix(in srgb, var(--accent-color), black 10%);
+        }
+
+        .auth-button.signup {
+            background-color: transparent;
+            color: var(--light-text-color);
+            border: 1px solid var(--light-text-color);
+        }
+
+        .auth-button.signup:hover {
             background-color: var(--light-text-color);
             color: var(--primary-color);
         }
 
-         /* Specific button styles for header */
-         .auth-button {
-            padding: 8px 16px; /* Slightly smaller buttons in header */
-            font-size: 0.95rem;
-         }
-         .auth-button.login {
-             background-color: var(--accent-color);
-             color: var(--primary-color);
-         }
-         .auth-button.login:hover {
-             background-color: color-mix(in srgb, var(--accent-color), black 10%);
-         }
-         .auth-button.signup {
-             background-color: transparent;
-             color: var(--light-text-color);
-             border: 1px solid var(--light-text-color);
-         }
-          .auth-button.signup:hover {
-             background-color: var(--light-text-color);
-             color: var(--primary-color);
-         }
-         .auth-button.logout {
-             background-color: #f8f9fa; /* Light background */
-             color: var(--secondary-color); /* Red text for logout */
-             border: 1px solid var(--border-color);
-         }
-         .auth-button.logout:hover {
-             background-color: #e9ecef; /* Slightly darker gray */
-             border-color: #adb5bd;
-         }
+        .auth-button.logout {
+            background-color: #f8f9fa;
+            color: var(--secondary-color);
+            border: 1px solid var(--border-color);
+        }
 
+        .auth-button.logout:hover {
+            background-color: #e9ecef;
+        }
 
         /* --- Hero Section --- */
         .hero-section {
-            background: linear-gradient(rgba(26, 42, 108, 0.8), rgba(178, 31, 31, 0.8)), url('https://via.placeholder.com/1200x500/cccccc/969696?text=Professional+Background') no-repeat center center/cover; /* Placeholder background */
+            background: linear-gradient(rgba(44, 82, 130, 0.7), rgba(44, 82, 130, 0.7)), url('https://images.unsplash.com/photo-1516321310764-2f51c5a650a2?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3') no-repeat center center/cover;
             color: var(--light-text-color);
-            padding: 6rem 0; /* More padding */
+            padding: 8rem 0;
             text-align: center;
         }
 
         .hero-section h1 {
             color: var(--light-text-color);
-            font-size: 3rem; /* Even larger */
-            margin-bottom: 1rem;
+            font-size: 3rem;
         }
 
         .hero-section .subtitle {
             font-size: 1.3rem;
-            color: rgba(255, 255, 255, 0.9);
+            color: #fff;
             margin-bottom: 2rem;
-            max-width: 700px; /* Limit subtitle width */
+            max-width: 700px;
             margin-left: auto;
             margin-right: auto;
         }
 
-        .hero-section .button-primary {
-            padding: 15px 35px; /* Larger CTA */
-            font-size: 1.2rem;
+        .hero-section .disclaimer {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 1rem;
         }
 
         /* --- How It Works Section --- */
         .how-it-works {
-            padding: 4rem 0;
-            background-color: var(--card-background); /* White background for contrast */
+            padding: 5rem 0;
+            background-color: var(--card-background);
         }
 
         .how-it-works ol {
-            list-style: none; /* Remove default numbers */
+            list-style: none;
             counter-reset: steps-counter;
             max-width: 800px;
             margin: 0 auto;
-            padding-left: 0; /* Remove default padding */
+            padding-left: 0;
         }
 
         .how-it-works li {
             counter-increment: steps-counter;
             margin-bottom: 1.5rem;
-            padding-left: 50px; /* Space for custom number */
+            padding-left: 50px;
             position: relative;
-            font-size: 1.1rem; /* Slightly larger text */
+            font-size: 1.1rem;
         }
 
         .how-it-works li::before {
@@ -277,44 +277,51 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            line-height: 35px; /* Center number vertically */
+        }
+
+        .video-container {
+            margin-top: 3rem;
+            text-align: center;
         }
 
         /* --- Learn More Section --- */
         .learn-more-section {
-            padding: 4rem 0;
+            padding: 5rem 0;
             text-align: center;
-             background-color: #eef1f5; /* Slightly different background */
+            background-color: #edf2f7;
         }
 
         .learn-more-section p {
             max-width: 650px;
-            margin-left: auto;
-            margin-right: auto;
-            margin-bottom: 2rem;
+            margin: 0 auto 2rem;
             font-size: 1.1rem;
         }
 
-        .learn-more-section .button-secondary {
-             border-color: var(--primary-color);
-             color: var(--primary-color);
-             background-color: transparent;
-             padding: 12px 30px;
-             font-size: 1.1rem;
+        /* --- Testimonials Section --- */
+        .testimonials-section {
+            padding: 5rem 0;
+            background-color: var(--card-background);
         }
-         .learn-more-section .button-secondary:hover {
-             background-color: var(--primary-color);
-             color: var(--light-text-color);
-         }
+
+        .testimonials-section .testimonial {
+            background: #fff;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            text-align: center;
+        }
 
         /* --- Footer --- */
         footer {
             background-color: var(--primary-color);
             color: rgba(255, 255, 255, 0.7);
             text-align: center;
-            padding: 1.5rem 0;
-            margin-top: 3rem; /* Space above footer */
+            padding: 2rem 0;
             font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--light-text-color);
         }
 
         /* --- Modals --- */
@@ -324,7 +331,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.6); /* Darker overlay */
+            background-color: rgba(0, 0, 0, 0.6);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -334,7 +341,6 @@
             transition: opacity 0.3s ease, visibility 0.3s ease;
         }
 
-        /* State when modal is active */
         .modal-overlay.visible {
             opacity: 1;
             visibility: visible;
@@ -342,18 +348,18 @@
 
         .modal-content {
             background-color: var(--card-background);
-            padding: 30px 40px; /* More padding */
+            padding: 30px 40px;
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
-            max-width: 450px; /* Slightly larger modal */
-            width: 90%; /* Responsive width */
+            max-width: 450px;
+            width: 90%;
             position: relative;
             transform: scale(0.95);
             transition: transform 0.3s ease;
         }
 
         .modal-overlay.visible .modal-content {
-             transform: scale(1);
+            transform: scale(1);
         }
 
         .modal-close-btn {
@@ -365,7 +371,6 @@
             font-size: 2rem;
             color: #aaa;
             cursor: pointer;
-            line-height: 1; /* Ensure 'x' is centered */
             transition: color 0.2s ease;
         }
 
@@ -375,18 +380,18 @@
 
         #login-modal-title, #confirmation-modal-title {
             text-align: center;
-            margin-bottom: 1.5rem; /* More space below title */
-            font-size: 1.5rem; /* Larger modal title */
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
             color: var(--primary-color);
         }
 
         .form-group {
-            margin-bottom: 1.25rem; /* More space between fields */
+            margin-bottom: 1.25rem;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 8px; /* Space between label and input */
+            margin-bottom: 8px;
             font-weight: 600;
             color: #555;
         }
@@ -395,9 +400,9 @@
         .form-group input[type="email"],
         .form-group input[type="password"] {
             width: 100%;
-            padding: 12px 15px; /* Larger input fields */
+            padding: 12px 15px;
             border: 1px solid var(--border-color);
-            border-radius: 6px; /* Slightly less rounded inputs */
+            border-radius: 6px;
             font-size: 1rem;
             font-family: var(--font-family);
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
@@ -405,7 +410,7 @@
 
         .form-group input:focus {
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(26, 42, 108, 0.15);
+            box-shadow: 0 0 0 3px rgba(44, 82, 130, 0.15);
             outline: none;
         }
 
@@ -413,8 +418,8 @@
             color: var(--error-color);
             font-size: 0.9rem;
             margin-top: 5px;
-            display: block; /* Ensure it takes space */
-            min-height: 1.2em; /* Prevent layout shifts */
+            display: block;
+            min-height: 1.2em;
         }
 
         .login-error {
@@ -423,54 +428,55 @@
         }
 
         .submit-login {
-            width: 100%; /* Full width login button */
+            width: 100%;
             padding: 12px 20px;
             font-size: 1.1rem;
-            margin-top: 1rem; /* Space above button */
-             background-color: var(--primary-color);
-             color: var(--light-text-color);
+            margin-top: 1rem;
+            background-color: var(--primary-color);
+            color: var(--light-text-color);
         }
+
         .submit-login:hover {
             background-color: color-mix(in srgb, var(--primary-color), black 10%);
         }
 
-        /* Confirmation Modal Specifics */
         #confirmation-modal-content {
-             max-width: 400px; /* Smaller confirm modal */
+            max-width: 400px;
         }
+
         #confirmation-modal-message {
             text-align: center;
             margin-bottom: 2rem;
-             color: var(--text-color);
+            color: var(--text-color);
         }
+
         .confirmation-modal-actions {
             display: flex;
-            justify-content: space-around; /* Space out buttons */
+            justify-content: space-around;
             gap: 15px;
         }
 
-         .confirmation-modal-actions .button {
-            flex: 1; /* Make buttons equal width */
-         }
+        .confirmation-modal-actions .button {
+            flex: 1;
+        }
 
         .cancel-button {
-             background-color: #6c757d; /* Gray cancel */
-             color: var(--light-text-color);
-             border: none;
+            background-color: #6c757d;
+            color: var(--light-text-color);
         }
-         .cancel-button:hover {
-              background-color: color-mix(in srgb, #6c757d, black 10%);
-         }
+
+        .cancel-button:hover {
+            background-color: color-mix(in srgb, #6c757d, black 10%);
+        }
 
         .confirm-proceed {
             background-color: var(--success-color);
             color: var(--light-text-color);
-            border: none;
-        }
-        .confirm-proceed:hover {
-             background-color: color-mix(in srgb, var(--success-color), black 10%);
         }
 
+        .confirm-proceed:hover {
+            background-color: color-mix(in srgb, var(--success-color), black 10%);
+        }
 
         /* --- Responsive Design --- */
         @media (max-width: 768px) {
@@ -478,64 +484,57 @@
                 font-size: 2rem;
             }
             h2 {
-                font-size: 1.75rem;
+                font-size: 1.8rem;
             }
             .hero-section h1 {
-                 font-size: 2.2rem;
+                font-size: 2.2rem;
             }
-             .hero-section .subtitle {
-                 font-size: 1.1rem;
-             }
-
+            .hero-section .subtitle {
+                font-size: 1.1rem;
+            }
             header .container {
                 flex-direction: column;
                 gap: 10px;
             }
-
-             .user-actions {
-                margin-top: 10px; /* Space when stacked */
-             }
-
+            .user-actions {
+                margin-top: 10px;
+            }
             .how-it-works li {
-                padding-left: 45px; /* Adjust padding */
+                padding-left: 45px;
                 font-size: 1rem;
             }
-             .how-it-works li::before {
-                 width: 30px;
-                 height: 30px;
-                 font-size: 0.9rem;
-                 line-height: 30px;
-             }
-
+            .how-it-works li::before {
+                width: 30px;
+                height: 30px;
+                font-size: 0.9rem;
+            }
+            .testimonials-section .container {
+                grid-template-columns: 1fr;
+            }
             .modal-content {
                 padding: 20px 25px;
             }
         }
 
-         @media (max-width: 480px) {
+        @media (max-width: 480px) {
             body {
-                font-size: 15px;
+                font-size: 0.95rem;
             }
-             .logo {
-                 font-size: 1.5rem;
-             }
+            .logo {
+                font-size: 1.4rem;
+            }
             .button {
-                padding: 8px 16px;
-                font-size: 0.9rem;
+                padding: 10px 20px;
+                width: 100%;
             }
             .hero-section .button-primary {
                 padding: 12px 25px;
                 font-size: 1rem;
             }
-             .learn-more-section .button-secondary {
-                 padding: 10px 20px;
-                 font-size: 1rem;
-             }
             .confirmation-modal-actions {
-                 flex-direction: column; /* Stack confirm buttons on very small screens */
-             }
-         }
-
+                flex-direction: column;
+            }
+        }
     </style>
 </head>
 <body>
@@ -543,24 +542,20 @@
 <header>
     <div class="container">
         <div class="logo">
-             <span class="icon">📈</span> बेटिङ सहयोगी
+            <span class="icon">🧮</span> बेटिङ सहयोगी
         </div>
         <div class="user-actions">
-            <!-- User Info - Controlled by JS -->
             <div id="user-info" style="display: none;">
                 <span class="user-icon">👤</span> नमस्ते, <span id="user-name">User</span>!
             </div>
-            <!-- Logout Button - Controlled by JS -->
             <button id="logout-btn" type="button" class="button auth-button logout" style="display: none;">
-                <span class="icon">🚪</span> बाहिरिनुहोस्
+                बाहिरिनुहोस्
             </button>
-            <!-- Signup Button - Controlled by JS (Hidden when logged in) -->
             <a href="s.html" id="signup-header-btn" class="button auth-button signup">
-    <span class="icon">📝</span> नि:शुल्क साइन अप
+                नि:शुल्क साइन अप
             </a>
-            <!-- Login Button - Controlled by JS (Hidden when logged in) -->
             <button id="login-header-btn" type="button" class="button auth-button login">
-                <span class="icon">🔑</span> Login
+                Login
             </button>
         </div>
     </div>
@@ -569,96 +564,103 @@
 <main>
     <section class="hero-section">
         <div class="container">
-            <h1>स्मार्ट बेटिङ, सुनिश्चित नाफा</h1>
-            <p class="subtitle">बेटिङ सहयोगी प्रयोग गरेर विभिन्न साइटहरूमा उपलब्ध बेटिङ अवसरहरूबाट आफ्नो नाफा अधिकतम बनाउनुहोस्।</p>
-            <!-- Link this button to the 'Learn More' section or directly to d.html if preferred -->
-                        <button id="proceed-btn" type="button" class="button button-primary">
-                <span class="icon">🚀</span> अब सुरु गर्नुहोस्
-                        </button>
+            <h1>स्मार्ट बेटिङका लागि तपाईंको विश्वसनीय सहयोगी</h1>
+            <p class="subtitle">बेटिङ सहयोगीले विभिन्न बेटिङ साइटहरूको Odds तुलना गरेर तपाईंलाई सूचित निर्णय लिन र सम्भावित नाफा बढाउन मद्दत गर्छ।</p>
+            <!-- अब सुरु गर्नुहोस् मा थिच्नुहोस् to proceed to b.html -->
+            <a href="b.html" class="button button-primary">
+                अब सुरु गर्नुहोस्
+            </a>
             
-             <!-- Status message area (Optional) -->
-            <div id="proceed-status-message" class="status-message" role="status" aria-live="polite" style="margin-top: 1rem; font-weight: 600;"></div>
         </div>
     </section>
 
     <section class="how-it-works">
         <div class="container">
-            <h2>यो कसरी काम गर्छ?</h2>
+            <h2>हाम्रो प्रणाली कसरी काम गर्छ?</h2>
             <ol>
-                <li>बेटिङ सहयोगीले तपाईंलाई विभिन्न बेटिङ साइटहरूमा उपलब्ध Odds तुलना गरेर नाफा सुनिश्चित गर्न मद्दत गर्दछ।</li>
-                <li>तपाईंले दुई फरक बेटिङ प्लेटफर्महरूबाट एउटै खेलको लागि Odds हाम्रो प्रणालीमा प्रविष्ट गर्नुहोस्।</li>
-                <li>हाम्रो क्याल्कुलेटरले तुरुन्तै गणना गर्छ कि प्रत्येक साइटमा कति रकम लगाउँदा जोखिम बिना नाफा कमाउन सकिन्छ।</li>
-                <li>सिफारिस गरिएको रकम अनुसार बेट लगाउँदा, खेलको नतिजा जे भए पनि तपाईंलाई नाफा हुन्छ।</li>
+                <li>बेटिङ सहयोगीले विभिन्न बेटिङ साइटहरूको Odds तुलना गर्छ, जसले तपाईंलाई उत्तम अवसरहरू पहिचान गर्न सघाउँछ।</li>
+                <li>तपाईंले दुई फरक बेटिङ प्लेटफर्महरूबाट एउटै खेलको Odds हाम्रो प्रणालीमा प्रविष्ट गर्नुहोस्।</li>
+                <li>हाम्रो क्याल्कुलेटरले तपाईंको लगानीको आधारमा सम्भावित नाफा र जोखिम गणना गर्छ।</li>
+                <li>सिफारिसहरू प्रयोग गरेर सूचित बेट लगाउनुहोस्, जसले तपाईंको नाफाको सम्भावना बढाउँछ।</li>
             </ol>
+            <div class="video-container">
+                <h3>हाम्रो भिडियो गाइड</h3>
+                <p>Let's host a YT video here: Replace with your YouTube embed link</p>
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/VIDEO_ID" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
         </div>
     </section>
 
     <section class="learn-more-section" id="learn-more">
         <div class="container">
-            <h2>कसरी प्रयोग गर्ने सिक्नुहोस्</h2>
-            <p>हाम्रो विस्तृत गाइड र उदाहरणसहितको क्याल्कुलेटर प्रयोग गरेर यो कसरी काम गर्छ भन्ने कुरा सजिलैसँग बुझ्नुहोस्। तपाईं आफैँले हिसाब गरेर हेर्न सक्नुहुन्छ।</p>
-            <!-- **** CRITICAL: Link to your demo/calculator page **** -->
+            <h2>हाम्रो उपकरण कसरी प्रयोग गर्ने?</h2>
+            <p>हाम्रो विस्तृत गाइड र डेमो क्याल्कुलेटरले तपाईंलाई बेटिङ सहयोगीको प्रयोग सजिलै सिकाउँछ। अब सुरु गर्नुहोस् मा थिच्नुहोस्!</p>
+            <!-- अब सुरु गर्नुहोस् मा थिच्नुहोस् to view demo -->
             <a href="d.html" class="button button-secondary">
-                <span class="icon">📖</span> विस्तृत जानकारी र डेमो
+                डेमो र गाइड हेर्नुहोस्
             </a>
         </div>
     </section>
 
+ 
 </main>
 
 <footer>
     <div class="container">
-        <p>© 2024 बेटिङ सहयोगी. सर्वाधिकार सुरक्षित।</p>
+        <p>© 2025 बेटिङ सहयोगी. सर्वाधिकार सुरक्षित।</p>
+        <p style="margin-top: 0.5rem;">
+            <a href="contact.html">हामीलाई सम्पर्क गर्नुहोस्</a> | 
+            <a href="terms.html">सेवाका सर्तहरू</a> | 
+            <a href="privacy.html">गोपनीयता नीति</a>
+        </p>
+        <p style="margin-top: 0.5rem;">इमेल : s2064b@gmail.com | फोन: +977-9866155224</p>
     </div>
 </footer>
 
-<!-- Login Modal -->
+<!-- Login Modal (Unchanged) -->
 <div id="login-modal-overlay" class="modal-overlay" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="login-modal-title">
     <div id="login-modal-content" class="modal-content">
         <button id="modal-close-btn" type="button" class="modal-close-btn" aria-label="Close Login Modal">×</button>
-        <!-- JS handles form submission -->
         <form id="login-form" aria-describedby="login-error-message">
             <h2 id="login-modal-title">Member Login</h2>
             <div class="form-group">
                 <label for="name-input">तपाईंको नाम:</label>
-                <input type="text" id="name-input" name="name" required placeholder="e.g., रमेश" autocomplete="name">
+                <input type="text" id="name-input" name="name" required placeholder="e.g., रमेश" autocomplete="name" lang="ne">
             </div>
             <div class="form-group">
                 <label for="email-input">इमेल ठेगाना:</label>
-                <input type="email" id="email-input" name="email" required placeholder="you@example.com" autocomplete="email">
+                <input type="email" id="email-input" name="email" required placeholder="you@example.com" autocomplete="email" lang="ne">
             </div>
             <div class="form-group">
                 <label for="password-input">पासवर्ड:</label>
-                <input type="password" id="password-input" name="password" required placeholder="आफ्नो पासवर्ड राख्नुहोस्" autocomplete="current-password">
+                <input type="password" id="password-input" name="password" required placeholder="आफ्नो पासवर्ड राख्नुहोस्" autocomplete="current-password" lang="ne">
             </div>
-             <button type="submit" id="login-submit-btn" class="button submit-login">
-                <span class="icon">🚀</span> Login गर्नुहोस्
+            <button type="submit" id="login-submit-btn" class="button submit-login">
+                Login गर्नुहोस्
             </button>
             <div id="login-error-message" class="error-message login-error" aria-live="polite"></div>
         </form>
     </div>
 </div>
 
-<!-- Confirmation Modal -->
+<!-- Confirmation Modal (Unchanged) -->
 <div id="confirmation-modal-overlay" class="modal-overlay" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="confirmation-modal-title">
-     <div id="confirmation-modal-content" class="modal-content">
-         <h3 id="confirmation-modal-title">Session Conflict Detected</h3>
-         <p id="confirmation-modal-message">
-             यो इमेल पहिले नै लगइन भएको छ... के तपाईं अगाडि बढ्न चाहनुहुन्छ?
-         </p>
-         <div class="confirmation-modal-actions">
-             <button id="confirm-cancel-btn" type="button" class="button cancel-button">
-                 <span class="icon">❌</span> रद्द गर्नुहोस्
-             </button>
-             <button id="confirm-proceed-btn" type="button" class="button confirm-proceed">
-                 <span class="icon">✔️</span> अगाडि बढ्नुहोस्
-             </button>
-         </div>
+    <div id="confirmation-modal-content" class="modal-content">
+        <h3 id="confirmation-modal-title">Session Conflict Detected</h3>
+        <p id="confirmation-modal-message">
+            यो इमेल पहिले नै लगइन भएको छ... के तपाईं अगाडि बढ्न चाहनुहुन्छ?
+        </p>
+        <div class="confirmation-modal-actions">
+            <button id="confirm-cancel-btn" type="button" class="button cancel-button">
+                रद्द गर्नुहोस्
+            </button>
+            <button id="confirm-proceed-btn" type="button" class="button confirm-proceed">
+                अगाडि बढ्नुहोस्
+            </button>
+        </div>
     </div>
 </div>
 
-<!-- ** IMPORTANT: Script tag is the LAST element before </body> ** -->
 <script src="app.js"></script>
-
 </body>
-</html>
+    </html>
