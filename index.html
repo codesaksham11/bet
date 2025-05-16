@@ -127,6 +127,14 @@
             align-items: center;
             gap: 15px;
         }
+        .youtube-short-player {
+    width: 315px;  /* Explicit width for the Shorts player */
+    height: 560px; /* Explicit height for the Shorts player */
+    /* The display: block; is already in your general iframe rule,
+       which is good. To ensure it's centered within .video-container: */
+    margin-left: auto;
+    margin-right: auto;
+        }
 
         #user-info {
             display: flex;
@@ -587,6 +595,7 @@
                 <h3>हाम्रो भिडियो गाइड</h3>
                 <p>Learn from the example</p>
                 <iframe
+                    class="youtube-short-player
     width="315"
     height="560"
     src="https://www.youtube.com/embed/RPGJ4xwCgC8"
